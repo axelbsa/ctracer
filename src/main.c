@@ -89,7 +89,7 @@ void draw_some_pixels(int* data)
     int num_spheres = 2;
     Sphere sphere_small = {
         .center.x = 0.0,
-        .center.y = -0.08,
+        .center.y = 0.0,
         .center.z = -1.0,
         .radius = 0.5
     };
