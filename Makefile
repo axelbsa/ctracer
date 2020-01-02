@@ -8,15 +8,24 @@
 #LFLAGS=-lraylib -lopengl32 -lraylib -lglfw3 -lgdi32
 
 CC=gcc
-CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
 
-SOURCES=main.c vec3.c ray.c hitable.c sphere.c hitable_list.c camera.c
+ifeq ($(OS),Windows_NT)
+    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
+    RMCMD=del
+else
+    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
+    LDFLAGS=-lm
+    RMCMD=rm
+endif
+
+
+SOURCES=src/main.c src/vec3.c src/ray.c src/hitable.c src/sphere.c src/hitable_list.c src/camera.c
 
 all:
-	$(CC) $(CFLAGS) $(SOURCES) -o main
+	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o main
 
 release:
 	$(CC) -DDEBUG $(SOURCES) $(CFLAGS) -O2 $(LFLAGS) -o main
 
 clean:
-	del main
+	$(RMCMD) main
