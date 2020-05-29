@@ -10,9 +10,10 @@
 #include "ray.h"
 #include "image.h"
 #include "vec3.h"
+#include "sphere.h"
 #include "hitable_list.h"
 #include "camera.h"
-#include "random.h"
+#include "common.h"
 
 #define nx 1000
 #define ny 500
@@ -29,26 +30,6 @@ void debugVector(Vec3 v1)
 {
     fprintf(stderr, "Vector has: [%f, %f, %f]\n", v1.x, v1.y, v1.z );
 }
-
-
-Vec3 random_in_unit_sphere()
-{
-    Vec3 p;
-
-    do 
-    {
-        p = vec3(random_double(), random_double(), random_double());
-        p = vec3_const_mul(p, 1.2);
-        p = vec3_sub(p, vec3(1.0, 1.0, 1.0));
-    
-    } while( square_length(p) >= 1.0 );
-
-    //fprintf(stderr, "Square length < 1.0: %f ", square_length(p));
-
-
-    return p;
-}
-
 
 Vec3 color(Ray r, HittableList world)
 {

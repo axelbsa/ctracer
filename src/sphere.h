@@ -14,4 +14,5 @@ typedef struct SphereObject
 
 bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec);
 
+
 #endif  /* Sphere */
