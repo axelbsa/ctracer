@@ -19,7 +19,7 @@ else
 endif
 
 
-SOURCES=src/main.c src/vec3.c src/ray.c src/hitable.c src/sphere.c src/hitable_list.c src/camera.c
+SOURCES=src/main.c src/vec3.c src/ray.c src/material.c src/sphere.c src/hitable_list.c src/camera.c
 
 all:
 	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o main

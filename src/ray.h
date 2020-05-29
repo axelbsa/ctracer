@@ -7,7 +7,6 @@ typedef struct ray
 {
     Vec3 A;
     Vec3 B;
-
 }Ray;
 
 Vec3 origin(Ray r);

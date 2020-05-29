@@ -21,7 +21,7 @@ void draw_image(int* data, uint32_t length, int nx, int ny)
 
     //int stbi_write_png(char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes);
     stbi_flip_vertically_on_write(1);
-    int val = stbi_write_png("someshit.png", nx, ny, 4, data, 0);
+    int val = stbi_write_png("ray-traced.png", nx, ny, 4, data, 0);
 
     if (!val) {
         fprintf(stderr, "SOME SHIT FAILED\n");

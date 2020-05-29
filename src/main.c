@@ -14,8 +14,8 @@
 #include "camera.h"
 #include "random.h"
 
-#define nx 600
-#define ny 300
+#define nx 1000
+#define ny 500
 #define ns 100
 
 

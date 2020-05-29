@@ -3,7 +3,7 @@
 
 #include "ray.h"
 #include "vec3.h"
-#include "hitable.h"
+#include "material.h"
 #include "sphere.h"
 
 
