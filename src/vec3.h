@@ -25,5 +25,6 @@ float length(Vec3 v);
 Vec3 unit_vector(Vec3 v);
 Vec3 vec3(float a, float b, float c);
 float square_length(Vec3 v1);
+Vec3 reflect(Vec3 v, Vec3 n);
 
 #endif  /* VEC3_H */

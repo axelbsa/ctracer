@@ -13,13 +13,13 @@ ifeq ($(OS),Windows_NT)
     CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
     RMCMD=del
 else
-    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
+    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb -Wall -Werror
     LDFLAGS=-lm
     RMCMD=rm
 endif
 
 
-SOURCES=src/main.c src/vec3.c src/ray.c src/material.c src/sphere.c src/hitable_list.c src/camera.c
+SOURCES=src/main.c src/vec3.c src/ray.c src/material.c src/sphere.c src/hitable_list.c src/camera.c src/common.c
 
 all:
 	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o main

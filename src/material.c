@@ -6,13 +6,17 @@
 #include "common.h"
 
 int lambertian_scatter(
-        Ray r_in, HitRecord rec, 
-        Vec3 attenuation, Ray scattered)
+        Ray r_in, HitRecord rec, Vec3 attenuation, 
+        Ray scattered, Vec3 albedo)
 {
     Vec3 target = vec3_add(rec.p, rec.normal);
-    target = random_in_unit_sphere();
+    target = vec3_add(target, random_in_unit_sphere());
+    
+    Vec3 target_minus_rec = vec3_sub(target, rec.p);
+    Ray r = {.A = rec.p, .B = target_minus_rec};
+    albedo = attenuation;
 
-    return false;
+    return true;
 }
 
 int metal_scatter(

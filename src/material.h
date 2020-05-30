@@ -16,8 +16,11 @@ typedef int (*Scatter) (
         Ray r_in,
         HitRecord rec,
         Vec3 attenuation,
-        Ray scattered
+        Ray scattered,
+        Vec3 albedo
 );
+
+void (& f_ref)(int);
 
 
 typedef struct material {

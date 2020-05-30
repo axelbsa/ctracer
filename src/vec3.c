@@ -123,11 +123,16 @@ Vec3 vec3(float a, float b, float c)
     return foo;
 }
 
+Vec3 reflect(Vec3 v, Vec3 n)
+{
+    float _tmp = 2 * dot(v, n);
+    Vec3 two_dot = vec3_const_mul(n, _tmp);
+    Vec3 result = vec3_sub(v, two_dot);
+    return result;
+}
+
 
 float square_length(Vec3 v1)
 {
     return (v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
 }
-
-
-
