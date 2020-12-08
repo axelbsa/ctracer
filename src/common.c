@@ -6,7 +6,7 @@
 double random_double()
 {
     //return (double)rand() / (double)((unsigned)RAND_MAX + 1.0);
-    return rand() / (RAND_MAX + 1.0);
+    return drand48();
 }
 
 Vec3 random_in_unit_sphere()

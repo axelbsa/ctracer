@@ -13,7 +13,7 @@ ifeq ($(OS),Windows_NT)
     CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
     RMCMD=del
 else
-    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb -Wall -Werror
+    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb -Wall
     LDFLAGS=-lm
     RMCMD=rm
 endif

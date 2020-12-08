@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
 #include <math.h>
 
 /*#define STB_IMAGE_WRITE_IMPLEMENTATION*/
@@ -31,12 +32,19 @@ void debugVector(Vec3 v1)
     fprintf(stderr, "Vector has: [%f, %f, %f]\n", v1.x, v1.y, v1.z );
 }
 
-Vec3 color(Ray r, HittableList world)
+Vec3 color(Ray r, HittableList world, int depth)
 {
     Vec3 p = vec3(0, 0, 0);
     HitRecord rec = {.normal.x = 0.0, .normal.y = 0.0, .normal.z = 0.0, .p = p};
     if ( hittable_list_hit(world, r, 0.001, FLT_MAX, &rec))
     {
+        Ray scattered;
+        Vec3 attenuation;
+        if (depth < 50)
+        {
+
+        }
+
         //fprintf(stderr, "Entering draw_some_pixels() func\n");
         Vec3 target = vec3_add(rec.p, rec.normal);
         Vec3 random_sphere = random_in_unit_sphere();
@@ -44,7 +52,7 @@ Vec3 color(Ray r, HittableList world)
         target = vec3_add(target, random_sphere);
         Ray temp = { rec.p, vec3_sub(target, rec.p) };
         
-        return vec3_const_mul( color(temp, world), 0.5 );
+        return vec3_const_mul( color(temp, world, depth + 1), 0.5 );
         //return vec3_const_mul(vec3(rec.normal.x +1,rec.normal.y +1,rec.normal.z +1), 0.5);
     }
     else
@@ -104,7 +112,7 @@ void draw_some_pixels(int* data)
                 float u = ((float) i + (float)random_double()) / (float) nx;
                 float v = ((float) j + (float)random_double()) / (float) ny;
                 Ray r = get_ray(cam, u, v);
-                col = vec3_add(col, color(r, world));
+                col = vec3_add(col, color(r, world, 0));
             }
 
             col = vec3_const_div(col, ns);
@@ -128,6 +136,7 @@ void draw_some_pixels(int* data)
 
 int main()
 {
+    srand48(time(NULL));
     setvbuf(stdout, 0, _IOLBF, 4096);
     int* data;
     data = (int*)malloc(sizeof(uint32_t) * nx * ny);
