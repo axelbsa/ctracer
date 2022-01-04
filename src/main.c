@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE    /* ALWAYS BEFORE the include statement */
 #include <float.h>  // Only used for FLT_MAX
 #include <stdlib.h>
 #include <stdint.h>
@@ -16,8 +17,8 @@
 #include "camera.h"
 #include "common.h"
 
-#define nx 1000
-#define ny 500
+#define nx 2000
+#define ny 1000
 #define ns 100
 
 
@@ -35,17 +36,23 @@ void debugVector(Vec3 v1)
 Vec3 color(Ray r, HittableList world, int depth)
 {
     Vec3 p = vec3(0, 0, 0);
+    Vec3 albedo = vec3(0, 0, 0);
     HitRecord rec = {.normal.x = 0.0, .normal.y = 0.0, .normal.z = 0.0, .p = p};
     if ( hittable_list_hit(world, r, 0.001, FLT_MAX, &rec))
     {
         Ray scattered;
         Vec3 attenuation;
-        if (depth < 50)
+
+        if (depth < 50 && rec.mat_ptr->s(r, rec, &attenuation, &scattered, albedo))
+        {
+            printf("We have a metal hit\n");
+        }
+        else
         {
 
         }
 
-        //fprintf(stderr, "Entering draw_some_pixels() func\n");
+        /*
         Vec3 target = vec3_add(rec.p, rec.normal);
         Vec3 random_sphere = random_in_unit_sphere();
 
@@ -53,6 +60,7 @@ Vec3 color(Ray r, HittableList world, int depth)
         Ray temp = { rec.p, vec3_sub(target, rec.p) };
         
         return vec3_const_mul( color(temp, world, depth + 1), 0.5 );
+        */
         //return vec3_const_mul(vec3(rec.normal.x +1,rec.normal.y +1,rec.normal.z +1), 0.5);
     }
     else
@@ -75,19 +83,29 @@ void draw_some_pixels(int* data)
 {
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
+    Material metal_material;
+    metal_material.s = metal_scatter;
+
+    Material lambert_material;
+    lambert_material.s = lambertian_scatter;
+
+    //Scatter = metal_scatter;
+
     int num_spheres = 2;
     Sphere sphere_small = {
         .center.x = 0.0,
         .center.y = 0.0,
         .center.z = -1.0,
-        .radius = 0.5
+        .radius = 0.5,
+        .mat_ptr = &metal_material
     };
 
     Sphere sphere_big = {
         .center.x = 0.0,
         .center.y = -100.5,
         .center.z = -1.0,
-        .radius = 100.0
+        .radius = 100.0,
+        .mat_ptr = &lambert_material
     };
 
     HittableList world;
@@ -136,7 +154,7 @@ void draw_some_pixels(int* data)
 
 int main()
 {
-    srand48(time(NULL));
+    //srand48(time(NULL));
     setvbuf(stdout, 0, _IOLBF, 4096);
     int* data;
     data = (int*)malloc(sizeof(uint32_t) * nx * ny);

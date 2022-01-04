@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include <stdbool.h>
+
 
 #include "material.h"
 #include "ray.h"
@@ -9,6 +11,11 @@ int lambertian_scatter(
         Ray r_in, HitRecord rec, Vec3 *attenuation,
         Ray *scattered, Vec3 albedo)
 {
+
+#ifdef DEBUG
+    fprintf(stderr, "Entering lambertian_scatter\n");
+#endif
+
     Vec3 target = vec3_add(rec.p, rec.normal);
     target = vec3_add(target, random_in_unit_sphere());
     
@@ -24,6 +31,11 @@ int metal_scatter(
         Ray r_in, HitRecord rec, Vec3 *attenuation,
         Ray *scattered, Vec3 albedo)
 {
+
+#ifdef DEBUG
+    fprintf(stderr, "Entering metal_scatter\n");
+#endif
+
     Vec3 reflected = reflect(
             unit_vector( direction( r_in ) ),
             rec.normal

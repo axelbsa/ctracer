@@ -1,7 +1,11 @@
 #ifndef MAT_H
 #define MAT_H
 
+#include "material.h"
 #include "ray.h"
+#include "vec3.h"
+#include "common.h"
+
 
 typedef struct 
 {
@@ -22,6 +26,15 @@ typedef int (*Scatter) (
 
 typedef struct material {
     Scatter s;
+    //int (*Scatter)(material * self);
 }Material;
+
+int lambertian_scatter(
+        Ray r_in, HitRecord rec, Vec3 *attenuation,
+        Ray *scattered, Vec3 albedo);
+
+int metal_scatter(
+        Ray r_in, HitRecord rec, Vec3 *attenuation,
+        Ray *scattered, Vec3 albedo);
 
 #endif

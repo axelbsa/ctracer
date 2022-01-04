@@ -5,8 +5,11 @@
 
 double random_double()
 {
-    //return (double)rand() / (double)((unsigned)RAND_MAX + 1.0);
+#ifdef _WIN32
+    return (double)rand() / (double)((unsigned)RAND_MAX + 1.0);
+#else
     return drand48();
+#endif
 }
 
 Vec3 random_in_unit_sphere()

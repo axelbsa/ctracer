@@ -1,0 +1,3 @@
+C:/dev/C/ctracer/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/dev/C/ctracer/cmake-build-debug/CMakeFiles/main.dir
+C:/dev/C/ctracer/cmake-build-debug/CMakeFiles/rebuild_cache.dir

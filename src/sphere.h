@@ -9,6 +9,7 @@ typedef struct SphereObject
 {
     Vec3 center;
     float radius;
+    struct material *mat_ptr;
 
 }Sphere;
 

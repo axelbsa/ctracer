@@ -10,7 +10,7 @@
 CC=gcc
 
 ifeq ($(OS),Windows_NT)
-    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
+    CFLAGS=-Wall -g -std=gnu11 -Wno-missing-braces -ggdb
     RMCMD=del
 else
     CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb -Wall

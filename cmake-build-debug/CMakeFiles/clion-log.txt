@@ -1,0 +1,4 @@
+C:\temp\clion\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" C:\dev\C\ctracer
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/dev/C/ctracer/cmake-build-debug
