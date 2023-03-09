@@ -44,7 +44,7 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
 
     // Dont know, but to be sure, lets reinitialize rec
     rec.normal = vec3(0.0f, 0.0f, 0.0f);
-    rec.t = 0.0f;
+    //rec.t = 0.0f;
     rec.p = p;
 
     if (depth <= 0) {
@@ -55,18 +55,22 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
     {
         Ray scattered;
         Vec3 attenuation;
-        //Material* m = metal_scatter(r, rec, attenuation, scattered, );
 
-        //if (rec.mat_ptr->s(r, rec, attenuation, scattered) ){}
+        if (rec.mat_ptr->s(r, rec, &attenuation, &scattered, rec.mat_ptr->albedo) )
+        {
+            //return attenuation * ray_color(scattered, world, depth-1);
+            return vec3_mul(attenuation, color(scattered, world, depth-1, p, rec) );
+        }
+
+        return vec3(0.0f,0.0f,0.0f);
 
         //fprintf(stderr, "Entering draw_some_pixels() func\n");
-        Vec3 target = vec3_add(rec.p, rec.normal);
-        Vec3 random_sphere = random_unit_vector();
-
-        target = vec3_add(target, random_sphere);
-        Ray temp = { rec.p, vec3_sub(target, rec.p) };
+        //Vec3 target = vec3_add(rec.p, rec.normal);
+        //Vec3 random_sphere = random_unit_vector();
+        //target = vec3_add(target, random_sphere);
+        //Ray temp = { rec.p, vec3_sub(target, rec.p) };
         
-        return vec3_const_mul( color(temp, world, depth - 1, p, rec), 0.5 );
+        //return vec3_const_mul( color(temp, world, depth - 1, p, rec), 0.5 );
     }
     else
     {
@@ -96,12 +100,17 @@ void draw_some_pixels(int* data)
     Vec3 sphere_center_material_albedo = vec3(0.7, 0.3, 0.3);
     Vec3 sphere_right_material_albedo = vec3(0.8, 0.6, 0.2);
 
+    Material sphere_ground_material = {.s = lambertian_scatter, .albedo = sphere_ground_material_albedo};
+    Material sphere_left_material = {.s = metal_scatter, .albedo = sphere_left_material_albedo};
+    Material sphere_center_material = {.s = lambertian_scatter, .albedo = sphere_center_material_albedo};
+    Material sphere_right_material = {.s = metal_scatter, .albedo = sphere_right_material_albedo};
+
     Sphere sphere_center = {
         .center.x = 0.0,
         .center.y = 0.0,
         .center.z = -1.0,
         .radius = 0.5,
-        .albedo = sphere_center_material_albedo
+        .mat_ptr = &sphere_center_material
     };
 
     Sphere sphere_left = {
@@ -109,15 +118,15 @@ void draw_some_pixels(int* data)
         .center.y = 0.0,
         .center.z = -1.0,
         .radius = 0.5,
-        .albedo = sphere_left_material_albedo
+        .mat_ptr = &sphere_left_material
     };
 
     Sphere sphere_right = {
-            .center.x = 1.0,
-            .center.y = 0.0,
-            .center.z = -1.0,
-            .radius = 0.5,
-            .albedo = sphere_right_material_albedo
+        .center.x = 1.0,
+        .center.y = 0.0,
+        .center.z = -1.0,
+        .radius = 0.5,
+        .mat_ptr = &sphere_right_material
     };
 
     Sphere sphere_ground = {
@@ -125,8 +134,9 @@ void draw_some_pixels(int* data)
         .center.y = -100.5,
         .center.z = -1.0,
         .radius = 100.0,
-        .albedo = sphere_ground_material_albedo
+        .mat_ptr = &sphere_ground_material
     };
+
 
     HittableList world;
     Sphere *s_list;
@@ -145,11 +155,6 @@ void draw_some_pixels(int* data)
 
     Vec3 p = vec3(0, 0, 0);
     HitRecord rec = {.normal.x = 0.0, .normal.y = 0.0, .normal.z = 0.0, .p = p};
-
-    //Material sphere_ground_material = lambertian_scatter()
-    //Material sphere_left_material = metal_scatter();
-    //Material sphere_center_material = lambertian_scatter();
-    //Material sphere_right_material = metal_scatter();
 
     for (int j = ny - 1; j >= 0; j--)
     {

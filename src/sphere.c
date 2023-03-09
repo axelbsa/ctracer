@@ -29,6 +29,7 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
             
             Vec3 temp = vec3_sub(rec->p, sp.center);
             rec->normal = vec3_const_div(temp, sp.radius);
+            rec->mat_ptr = sp.mat_ptr;
             return true;
         }
         
@@ -41,6 +42,7 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
             
             Vec3 temp = vec3_sub(rec->p, sp.center);
             rec->normal = vec3_const_div(temp, sp.radius);
+            rec->mat_ptr = sp.mat_ptr;
             return true;
         }
     

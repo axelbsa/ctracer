@@ -94,9 +94,9 @@ Vec3 vec3_const_div(Vec3 v1, const float t)
 float dot(Vec3 a, Vec3 b)
 {
     return (
-        a.x * b.x +
-        a.y * b.y +
-        a.z * b.z
+        (a.x * b.x) +
+        (a.y * b.y) +
+        (a.z * b.z)
     );
 }
 
