@@ -7,7 +7,7 @@
 # Windows LFLAGS
 #LFLAGS=-lraylib -lopengl32 -lraylib -lglfw3 -lgdi32
 
-CC=gcc
+CC=clang
 
 ifeq ($(OS),Windows_NT)
     CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
