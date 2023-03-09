@@ -7,6 +7,7 @@ extern double drand48();
 
 extern double random_double();
 extern Vec3 random_in_unit_sphere();
+extern Vec3 random_unit_vector();
 
 
 #endif

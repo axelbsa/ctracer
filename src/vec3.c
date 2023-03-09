@@ -119,8 +119,8 @@ Vec3 unit_vector(Vec3 v)
 
 Vec3 vec3(float a, float b, float c)
 {
-    Vec3 foo = {a, b, c};
-    return foo;
+    Vec3 v3 = {a, b, c};
+    return v3;
 }
 
 Vec3 reflect(Vec3 v, Vec3 n)

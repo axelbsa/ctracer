@@ -15,15 +15,22 @@
 #include "hitable_list.h"
 #include "camera.h"
 #include "common.h"
+#include "material.h"
 
 #define nx 1000
 #define ny 500
-#define ns 100
+#define ns 50
 
 
 void debugCamera(Camera cam)
 {
-    fprintf(stderr, "Camera has: lower_left: [%f, %f, %f]\n", cam.lower_left_corner.x, cam.lower_left_corner.y, cam.lower_left_corner.z );
+    fprintf(
+        stderr,
+        "Camera has: lower_left: [%f, %f, %f]\n",
+        cam.lower_left_corner.x,
+        cam.lower_left_corner.y,
+        cam.lower_left_corner.z
+    );
 }
 
 
@@ -32,28 +39,34 @@ void debugVector(Vec3 v1)
     fprintf(stderr, "Vector has: [%f, %f, %f]\n", v1.x, v1.y, v1.z );
 }
 
-Vec3 color(Ray r, HittableList world, int depth)
+Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
 {
-    Vec3 p = vec3(0, 0, 0);
-    HitRecord rec = {.normal.x = 0.0, .normal.y = 0.0, .normal.z = 0.0, .p = p};
+
+    // Dont know, but to be sure, lets reinitialize rec
+    rec.normal = vec3(0.0f, 0.0f, 0.0f);
+    rec.t = 0.0f;
+    rec.p = p;
+
+    if (depth <= 0) {
+        return vec3(0.0f, 0.0f, 0.0f);
+    }
+
     if ( hittable_list_hit(world, r, 0.001, FLT_MAX, &rec))
     {
         Ray scattered;
         Vec3 attenuation;
-        if (depth < 50)
-        {
+        //Material* m = metal_scatter(r, rec, attenuation, scattered, );
 
-        }
+        //if (rec.mat_ptr->s(r, rec, attenuation, scattered) ){}
 
         //fprintf(stderr, "Entering draw_some_pixels() func\n");
         Vec3 target = vec3_add(rec.p, rec.normal);
-        Vec3 random_sphere = random_in_unit_sphere();
+        Vec3 random_sphere = random_unit_vector();
 
         target = vec3_add(target, random_sphere);
         Ray temp = { rec.p, vec3_sub(target, rec.p) };
         
-        return vec3_const_mul( color(temp, world, depth + 1), 0.5 );
-        //return vec3_const_mul(vec3(rec.normal.x +1,rec.normal.y +1,rec.normal.z +1), 0.5);
+        return vec3_const_mul( color(temp, world, depth - 1, p, rec), 0.5 );
     }
     else
     {
@@ -73,34 +86,70 @@ Vec3 color(Ray r, HittableList world, int depth)
 
 void draw_some_pixels(int* data)
 {
+    const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
-    int num_spheres = 2;
-    Sphere sphere_small = {
+    int num_spheres = 4;
+
+    Vec3 sphere_ground_material_albedo = vec3(0.8, 0.8, 0.0);
+    Vec3 sphere_left_material_albedo = vec3(0.8, 0.8, 0.8);
+    Vec3 sphere_center_material_albedo = vec3(0.7, 0.3, 0.3);
+    Vec3 sphere_right_material_albedo = vec3(0.8, 0.6, 0.2);
+
+    Sphere sphere_center = {
         .center.x = 0.0,
         .center.y = 0.0,
         .center.z = -1.0,
-        .radius = 0.5
+        .radius = 0.5,
+        .albedo = sphere_center_material_albedo
     };
 
-    Sphere sphere_big = {
+    Sphere sphere_left = {
+        .center.x = -1.0,
+        .center.y = 0.0,
+        .center.z = -1.0,
+        .radius = 0.5,
+        .albedo = sphere_left_material_albedo
+    };
+
+    Sphere sphere_right = {
+            .center.x = 1.0,
+            .center.y = 0.0,
+            .center.z = -1.0,
+            .radius = 0.5,
+            .albedo = sphere_right_material_albedo
+    };
+
+    Sphere sphere_ground = {
         .center.x = 0.0,
         .center.y = -100.5,
         .center.z = -1.0,
-        .radius = 100.0
+        .radius = 100.0,
+        .albedo = sphere_ground_material_albedo
     };
 
     HittableList world;
     Sphere *s_list;
     s_list = (Sphere*)malloc(sizeof(Sphere) * num_spheres);
     
-    s_list[0] = sphere_small;
-    s_list[1] = sphere_big;
+    s_list[0] = sphere_ground;
+    s_list[1] = sphere_center;
+    s_list[2] = sphere_left;
+    s_list[3] = sphere_right;
+
     world.list = s_list;
     world.list_size = num_spheres;
 
     Camera cam = create_camera();
     debugCamera(cam);
+
+    Vec3 p = vec3(0, 0, 0);
+    HitRecord rec = {.normal.x = 0.0, .normal.y = 0.0, .normal.z = 0.0, .p = p};
+
+    //Material sphere_ground_material = lambertian_scatter()
+    //Material sphere_left_material = metal_scatter();
+    //Material sphere_center_material = lambertian_scatter();
+    //Material sphere_right_material = metal_scatter();
 
     for (int j = ny - 1; j >= 0; j--)
     {
@@ -112,7 +161,7 @@ void draw_some_pixels(int* data)
                 float u = ((float) i + (float)random_double()) / (float) nx;
                 float v = ((float) j + (float)random_double()) / (float) ny;
                 Ray r = get_ray(cam, u, v);
-                col = vec3_add(col, color(r, world, 0));
+                col = vec3_add(col, color(r, world, max_depth, p, rec));
             }
 
             col = vec3_const_div(col, ns);

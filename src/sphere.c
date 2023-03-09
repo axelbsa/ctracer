@@ -18,7 +18,7 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
 
     if ( discriminant > 0 )
     {
-        /* End of quadric formula, probably faster to avoid squaring
+        /* End of quadratic formula, probably faster to avoid squaring
          * until we actually have a "hit" */
         float root = (-b - sqrt( discriminant )) / a;
 
@@ -32,7 +32,7 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
             return true;
         }
         
-        /* Check second solution in quadric formual -b +- sqrt */
+        /* Check second solution in quadratic formula -b +- sqrt */
         root = (-b + sqrt( discriminant )) / a;
         if ( root < tmax && root > tmin)
         {

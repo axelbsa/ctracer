@@ -18,7 +18,6 @@ Camera create_camera()
 
 void set_camera_position(Camera *c, Vec3 origin, Vec3 hori, Vec3 vert, Vec3 orig)
 {
-    c->origin = orig;
     c->horizontal = hori;
     c->vertical = vert;
     c->origin = orig;
