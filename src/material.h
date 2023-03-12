@@ -23,6 +23,7 @@ typedef int (*Scatter) (
 typedef struct material {
     Scatter s;
     Vec3 albedo;
+    double fuzz;
 }Material;
 
 int lambertian_scatter(Ray r_in, HitRecord rec, Vec3 *attenuation, Ray *scattered, Vec3 albedo);

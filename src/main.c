@@ -101,9 +101,9 @@ void draw_some_pixels(int* data)
     Vec3 sphere_right_material_albedo = vec3(0.8, 0.6, 0.2);
 
     Material sphere_ground_material = {.s = lambertian_scatter, .albedo = sphere_ground_material_albedo};
-    Material sphere_left_material = {.s = metal_scatter, .albedo = sphere_left_material_albedo};
+    Material sphere_left_material = {.s = metal_scatter, .albedo = sphere_left_material_albedo, .fuzz = CLAMP(0.3, 0.0, 1.0)};
     Material sphere_center_material = {.s = lambertian_scatter, .albedo = sphere_center_material_albedo};
-    Material sphere_right_material = {.s = metal_scatter, .albedo = sphere_right_material_albedo};
+    Material sphere_right_material = {.s = metal_scatter, .albedo = sphere_right_material_albedo, .fuzz = CLAMP(1.0, 0.0, 1.0)};
 
     Sphere sphere_center = {
         .center.x = 0.0,

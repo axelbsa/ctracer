@@ -10,15 +10,6 @@ int lambertian_scatter(
         Ray *scattered, Vec3 albedo)
 {
 
-
-    //Vec3 target = vec3_add(rec.p, rec.normal);
-    //Vec3 random_sphere = random_unit_vector();
-    //target = vec3_add(target, random_sphere);
-    //Ray temp = { rec.p, vec3_sub(target, rec.p) };
-
-    //return vec3_const_mul( color(temp, world, depth - 1, p, rec), 0.5 );
-
-
     Vec3 target = vec3_add(rec.p, rec.normal);
 
     Vec3 random_sphere = random_unit_vector();
@@ -42,6 +33,8 @@ int metal_scatter(
             unit_vector( direction( r_in ) ),
             rec.normal
     );
+    Vec3 fuzziness = vec3_const_mul(random_in_unit_sphere(), rec.mat_ptr->fuzz);
+    reflected = vec3_add(reflected, fuzziness);
     Ray _tmp = {.A = rec.p, .B = reflected};
     *scattered = _tmp;
     *attenuation = albedo;
