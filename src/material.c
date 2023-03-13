@@ -41,3 +41,23 @@ int metal_scatter(
 
     return ( dot( direction(*scattered), rec.normal) > 0 );
 }
+
+
+int dielectric_scatter(
+        Ray r_in, HitRecord rec, Vec3 *attenuation,
+        Ray *scattered, Vec3 albedo)
+{
+    *attenuation = vec3(1.0, 1.0, 1.0);
+    double refraction_ratio = rec.front_face ? (1.0 / rec.mat_ptr->ir) : rec.mat_ptr->ir;
+
+    //vec3 unit_direction = unit_vector(r_in.direction());
+    Vec3 unit_direction = unit_vector(direction(r_in));
+
+    //vec3 refracted = refract(unit_direction, rec.normal, refraction_ratio);
+    Vec3 refracted = refract(unit_direction, rec.normal, refraction_ratio);
+
+    //scattered = ray(rec.p, refracted);
+    Ray _scattered_ray = {.A = rec.p, .B = refracted};
+    *scattered = _scattered_ray;
+    return true;
+}

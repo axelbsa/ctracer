@@ -96,7 +96,7 @@ Vec3* vec3_negate(Vec3* v)
     v->x = -v->x;
     v->y = -v->y;
     v->z = -v->z;
-    return v;
+    return v;  // Why am i mutating values _and_ then returning the address?
 }
 
 
@@ -142,13 +142,17 @@ Vec3 reflect(Vec3 v, Vec3 n)
 
 Vec3 refract(Vec3 uv, Vec3 n, double etai_over_etat)
 {
-
     float cos_theta = dot(*vec3_negate(&uv), n);
     cos_theta = MIN(cos_theta, 1.0);
 
-    vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
-    return uv;
+    Vec3 r_out_perp = vec3_const_mul(n, cos_theta);
+    r_out_perp = vec3_add(uv, r_out_perp);
+    r_out_perp = vec3_const_mul(r_out_perp, etai_over_etat);
 
+    float r_out_parallel_fabs = -sqrtf( fabs(1.0f - length(r_out_perp)) );
+    Vec3 r_out_parallel = vec3_const_mul(n, r_out_parallel_fabs);
+
+    return vec3_add(r_out_perp, r_out_parallel);
 }
 
 /*vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {

@@ -7,6 +7,14 @@
 #include "sphere.h"
 
 
+static inline void _set_face_normal(Ray r, Vec3* outward_normal, HitRecord *rec) {
+    //front_face = dot(r.direction(), outward_normal) < 0;
+    rec->front_face = dot(direction(r), *outward_normal) < 0;
+
+    //normal = front_face ? outward_normal : -outward_normal;
+    rec->normal = rec->front_face ? *outward_normal : *vec3_negate(outward_normal);
+}
+
 bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
 {
     /* Quadratic formula for calculating x^2 * y^2 * z^2 */
@@ -30,6 +38,12 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
             Vec3 temp = vec3_sub(rec->p, sp.center);
             rec->normal = vec3_const_div(temp, sp.radius);
             rec->mat_ptr = sp.mat_ptr;
+
+            //Vec3 outward_normal = (rec->p - center) / radius;
+            Vec3 _outward_normal = vec3_sub(rec->p, sp.center);
+            _outward_normal = vec3_const_div(_outward_normal, sp.radius);
+            _set_face_normal(r, &_outward_normal, rec);
+
             return true;
         }
         
@@ -43,6 +57,11 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
             Vec3 temp = vec3_sub(rec->p, sp.center);
             rec->normal = vec3_const_div(temp, sp.radius);
             rec->mat_ptr = sp.mat_ptr;
+
+            Vec3 _outward_normal = vec3_sub(rec->p, sp.center);
+            _outward_normal = vec3_const_div(_outward_normal, sp.radius);
+            _set_face_normal(r, &_outward_normal, rec);
+
             return true;
         }
     

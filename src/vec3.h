@@ -25,5 +25,8 @@ Vec3 unit_vector(Vec3 v);
 Vec3 vec3(float a, float b, float c);
 float square_length(Vec3 v1);
 Vec3 reflect(Vec3 v, Vec3 n);
+Vec3 refract(Vec3 uv, Vec3 n, double etai_over_etat);
+Vec3* vec3_negate(Vec3* v);
+
 
 #endif  /* VEC3_H */
