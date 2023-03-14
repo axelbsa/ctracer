@@ -31,5 +31,7 @@ typedef struct material {
 
 int lambertian_scatter(Ray r_in, HitRecord rec, Vec3 *attenuation, Ray *scattered, Vec3 albedo);
 int metal_scatter(Ray r_in, HitRecord rec, Vec3 *attenuation, Ray *scattered, Vec3 albedo);
+int dielectric_scatter(Ray r_in, HitRecord rec, Vec3 *attenuation, Ray *scattered, Vec3 albedo);
+int dielectric_scatter_2(Ray r_in, HitRecord rec, Vec3 *attenuation, Ray *scattered, Vec3 albedo);
 
 #endif

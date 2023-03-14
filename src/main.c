@@ -101,7 +101,7 @@ void draw_some_pixels(int* data)
     Vec3 sphere_right_material_albedo = vec3(0.8, 0.6, 0.2);
 
     Material sphere_ground_material = {.s = lambertian_scatter, .albedo = sphere_ground_material_albedo};
-    Material sphere_left_material = {.s = metal_scatter, .albedo = sphere_left_material_albedo, .fuzz = CLAMP(0.3, 0.0, 1.0)};
+    Material sphere_left_material = {.s = dielectric_scatter_2, .albedo = sphere_left_material_albedo, .ir = 1.5f};
     Material sphere_center_material = {.s = lambertian_scatter, .albedo = sphere_center_material_albedo};
     Material sphere_right_material = {.s = metal_scatter, .albedo = sphere_right_material_albedo, .fuzz = CLAMP(1.0, 0.0, 1.0)};
 
@@ -202,8 +202,14 @@ int main()
     }
 
     //stbi_flip_vertically_on_write(-1); // flag is non-zero to flip data vertically
+    long current_time = get_tick();
 
     draw_some_pixels(data);
+
+    long delta = get_tick() - current_time;
+
+    fprintf(stderr, "[*] %ld seconds to trace all the rays\n", delta/1000);
+
     draw_image(data, nx * ny, nx, ny);
 
     free(data);

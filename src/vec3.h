@@ -1,6 +1,8 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <stdbool.h>
+
 typedef struct vector3
 {
     float x;
@@ -26,7 +28,9 @@ Vec3 vec3(float a, float b, float c);
 float square_length(Vec3 v1);
 Vec3 reflect(Vec3 v, Vec3 n);
 Vec3 refract(Vec3 uv, Vec3 n, double etai_over_etat);
-Vec3* vec3_negate(Vec3* v);
+bool refract_2(Vec3 v, Vec3 n, float ni_over_nt, Vec3* refracted);
+Vec3* vec3_negate_ptr(Vec3* v);
+Vec3 vec3_negate(Vec3 v);
 
 
 #endif  /* VEC3_H */

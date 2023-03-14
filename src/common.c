@@ -3,9 +3,20 @@
 
 #include "vec3.h"
 
-//https://gist.github.com/mortennobel/8665258
+/*
+ * drand48 for windows
+ * https://gist.github.com/mortennobel/8665258
+*/
 
 #include <math.h>
+
+#ifdef _WIN32
+#include "windows.h"
+#else
+#include <sys/time.h>
+#endif
+
+
 #define RAND48_SEED_0   (0x330e)
 #define RAND48_SEED_1 (0xabcd)
 #define RAND48_SEED_2 (0x1234)
@@ -14,6 +25,23 @@
 #define RAND48_MULT_2 (0x0005)
 #define RAND48_ADD (0x000b)
 
+
+long get_tick()
+{
+#ifdef _WIN32
+    // https://stackoverflow.com/questions/1695288/getting-the-current-time-in-milliseconds-from-the-system-clock-in-windows
+    SYSTEMTIME time;
+    GetSystemTime(&time);
+    DWORD millis = (time.wSeconds * 1000) + time.wMilliseconds;
+    return (long)millis;
+#else
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    long millis = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    return millis;
+#endif
+
+}
 
 unsigned short _rand48_seed[3] = {
         RAND48_SEED_0,
@@ -94,3 +122,4 @@ Vec3 random_in_unit_sphere()
 Vec3 random_unit_vector() {
     return unit_vector(random_in_unit_sphere());
 }
+

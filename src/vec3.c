@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <math.h>
 
 #include "common.h"
@@ -91,12 +92,17 @@ Vec3 vec3_const_div(Vec3 v1, const float t)
     return res;
 }
 
-Vec3* vec3_negate(Vec3* v)
+Vec3* vec3_negate_ptr(Vec3* v)
 {
     v->x = -v->x;
     v->y = -v->y;
     v->z = -v->z;
     return v;  // Why am i mutating values _and_ then returning the address?
+}
+
+Vec3 vec3_negate(Vec3 v)
+{
+    return vec3(-v.x, -v.y, -v.z);
 }
 
 
@@ -112,7 +118,7 @@ float dot(Vec3 a, Vec3 b)
 
 float length(Vec3 v)
 {
-    return sqrt(
+    return sqrtf(
         v.x * v.x +
         v.y * v.y +
         v.z * v.z
@@ -142,14 +148,14 @@ Vec3 reflect(Vec3 v, Vec3 n)
 
 Vec3 refract(Vec3 uv, Vec3 n, double etai_over_etat)
 {
-    float cos_theta = dot(*vec3_negate(&uv), n);
-    cos_theta = MIN(cos_theta, 1.0);
+    float cos_theta = dot(vec3_negate(uv), n);
+    cos_theta = MIN(cos_theta, 1.0f);
 
     Vec3 r_out_perp = vec3_const_mul(n, cos_theta);
     r_out_perp = vec3_add(uv, r_out_perp);
     r_out_perp = vec3_const_mul(r_out_perp, etai_over_etat);
 
-    float r_out_parallel_fabs = -sqrtf( fabs(1.0f - length(r_out_perp)) );
+    float r_out_parallel_fabs = -sqrtf( fabsf(1.0f - length(r_out_perp)) );
     Vec3 r_out_parallel = vec3_const_mul(n, r_out_parallel_fabs);
 
     return vec3_add(r_out_perp, r_out_parallel);
@@ -161,6 +167,29 @@ vec3 r_out_perp =  etai_over_etat * (uv + cos_theta*n);
 vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
 return r_out_perp + r_out_parallel;
 }*/
+
+bool refract_2(Vec3 v, Vec3 n, float ni_over_nt, Vec3* refracted)
+{
+    Vec3 uv = unit_vector(v);
+    float dt = dot(uv, n);
+    float discriminant = 1.0f - ni_over_nt * ni_over_nt * (1 - dt * dt);
+
+    if (discriminant > 0)
+    {
+        // refracted = ni_over_nt * (uv - n*dt) - n*qrt(discriminant);
+        Vec3 ref_left_part = vec3_const_mul(n, dt);
+        ref_left_part = vec3_sub(uv, ref_left_part);
+        ref_left_part = vec3_const_mul(ref_left_part, ni_over_nt);
+
+        Vec3 ref_right_part = vec3_const_mul(n, sqrtf(discriminant));
+
+        *refracted = vec3_sub(ref_left_part, ref_right_part);
+        return true;
+    }
+
+    return false;
+
+}
 
 
 float square_length(Vec3 v1)
