@@ -32,6 +32,8 @@ bool refract_2(Vec3 v, Vec3 n, float ni_over_nt, Vec3* refracted);
 Vec3* vec3_negate_ptr(Vec3* v);
 Vec3 vec3_negate(Vec3 v);
 double degrees_to_radians(double degrees);
+Vec3 cross(const Vec3 u, const Vec3 v);
+Vec3 random_in_unit_disc();
 
 
 #endif  /* VEC3_H */

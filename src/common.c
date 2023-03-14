@@ -32,7 +32,7 @@ long get_tick()
     // https://stackoverflow.com/questions/1695288/getting-the-current-time-in-milliseconds-from-the-system-clock-in-windows
     SYSTEMTIME time;
     GetSystemTime(&time);
-    DWORD millis = (time.wSeconds * 1000) + time.wMilliseconds;
+    WORD millis = (time.wSecond * 1000) + time.wMilliseconds;
     return (long)millis;
 #else
     struct timeval time;

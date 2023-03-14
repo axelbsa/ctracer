@@ -105,6 +105,31 @@ Vec3 vec3_negate(Vec3 v)
     return vec3(-v.x, -v.y, -v.z);
 }
 
+Vec3 random_in_unit_disc()
+{
+    while (true)
+    {
+        Vec3 p = vec3(random_double(-1,1), random_double(-1,1), 0);
+
+        if (square_length(p) >= 1)
+        {
+            continue;
+        }
+
+        return p;
+    }
+
+}
+
+Vec3 cross(const Vec3 u, const Vec3 v)
+{
+    return vec3(
+        u.y * v.z - u.z * v.y,
+        u.z * v.x - u.x * v.z,
+        u.x * v.y - u.y * v.x
+    );
+}
+
 
 float dot(Vec3 a, Vec3 b)
 {
@@ -123,6 +148,11 @@ float length(Vec3 v)
         v.y * v.y +
         v.z * v.z
     );
+}
+
+double length_squared(Vec3 v)
+{
+    return (v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 

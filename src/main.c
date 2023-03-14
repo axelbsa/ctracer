@@ -88,7 +88,10 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
 }
 
 
-void draw_some_pixels(int* data)
+void draw_some_pixels(
+        int image_width, int image_height,
+        int samples_per_pixel, double aspect_ratio, int* data
+)
 {
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
@@ -122,11 +125,11 @@ void draw_some_pixels(int* data)
     };
 
     Sphere sphere_left_2 = {
-            .center.x = -1.0,
-            .center.y = 0.0,
-            .center.z = -1.0,
-            .radius = -0.4,
-            .mat_ptr = &sphere_left_material
+        .center.x = -1.0,
+        .center.y = 0.0,
+        .center.z = -1.0,
+        .radius = -0.4,
+        .mat_ptr = &sphere_left_material
     };
 
     Sphere sphere_right = {
@@ -145,7 +148,6 @@ void draw_some_pixels(int* data)
         .mat_ptr = &sphere_ground_material
     };
 
-
     HittableList world;
     Sphere *s_list;
     s_list = (Sphere*)malloc(sizeof(Sphere) * num_spheres);
@@ -159,37 +161,46 @@ void draw_some_pixels(int* data)
     world.list = s_list;
     world.list_size = num_spheres;
 
-    double aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
-    const int image_height = (int)(image_width / aspect_ratio);
+    Vec3 look_from = vec3(3,3,2);
+    Vec3 look_at = vec3(0,0,-1);
 
-    Camera cam = create_camera(90, aspect_ratio);
+    Camera cam = create_camera(
+            look_from,
+            look_at,
+            vec3(0,1,0),
+            50,
+            aspect_ratio,
+            length(vec3_sub(look_from, look_at)),
+            2.0
+    );
+
+    //camera cam(point3(-2,2,1), point3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
     debugCamera(cam);
 
     Vec3 p = vec3(0, 0, 0);
     HitRecord rec = {.normal.x = 0.0, .normal.y = 0.0, .normal.z = 0.0, .p = p};
 
-    for (int j = ny - 1; j >= 0; j--)
+    for (int j = image_height - 1; j >= 0; j--)
     {
-        for (int i = 0; i < nx; i++)
+        for (int i = 0; i < image_width; i++)
         {
             Vec3 col = vec3(0.0, 0.0, 0.0);
-            for ( int s = 0; s < ns; s++)
+            for (int s = 0; s < samples_per_pixel; s++)
             {
-                float u = ((float) i + (float)random_double()) / (float) nx;
-                float v = ((float) j + (float)random_double()) / (float) ny;
+                float u = ((float) i + (float)random_double()) / (float) image_width;
+                float v = ((float) j + (float)random_double()) / (float) image_height;
                 Ray r = get_ray(cam, u, v);
                 col = vec3_add(col, color(r, world, max_depth, p, rec));
             }
 
-            col = vec3_const_div(col, ns);
+            col = vec3_const_div(col, samples_per_pixel);
             col = vec3( sqrt(col.x), sqrt(col.y), sqrt(col.z) );
 
             int ir = (int) (255.99f * col.x);
             int ig = (int) (255.99f * col.y);
             int ib = (int) (255.99f * col.z);
 
-            int index = (j * nx) + i;
+            int index = (j * image_width) + i;
             //fprintf(stderr, "[(i)=%d, (j)=%d   Index = %03d]   ", j, i, index);
             data[index] = (0xff << 24) | (ib << 16) | (ig << 8) | ir;
         }
@@ -205,8 +216,15 @@ int main()
 {
     srand48(time(NULL));
     setvbuf(stdout, 0, _IOLBF, 4096);
+
+    double aspect_ratio = 16.0 / 9.0;
+    //double aspect_ratio = 2.0 / 1.0;
+    const int image_width = 1000;
+    const int image_height = (int)(image_width / aspect_ratio);
+    const int samples_per_pixel = 50;
+
     int* data;
-    data = (int*)malloc(sizeof(uint32_t) * nx * ny);
+    data = (int*)malloc(sizeof(uint32_t) * image_width * image_height);
 
     if ( data == NULL ) 
     {
@@ -217,13 +235,13 @@ int main()
     //stbi_flip_vertically_on_write(-1); // flag is non-zero to flip data vertically
     long current_time = get_tick();
 
-    draw_some_pixels(data);
+    draw_some_pixels(image_width, image_height, samples_per_pixel, aspect_ratio, data);
 
     long delta = get_tick() - current_time;
 
     fprintf(stderr, "[*] %ld seconds to trace all the rays\n", delta/1000);
 
-    draw_image(data, nx * ny, nx, ny);
+    draw_image(data, image_width * image_height, image_width, image_height);
 
     free(data);
 

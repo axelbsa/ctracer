@@ -30,7 +30,7 @@ void draw_image(int* data, uint32_t length, int nx, int ny)
     }
 
     /*//int val = stbi_write_bmp("someshit.bmp", WIDTH, HEIGHT, 3, data);*/
-    /*val = stbi_write_tga("someshit.tga", nx, ny, 4, data);*/
+    /*val = stbi_write_tga("someshit.tga", image_width, image_height, 4, data);*/
 
     /*if (!val) {*/
         /*fprintf(stderr, "SOME SHIT FAILED\n");*/
