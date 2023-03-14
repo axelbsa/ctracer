@@ -196,3 +196,13 @@ float square_length(Vec3 v1)
 {
     return (v1.x * v1.x + v1.y * v1.y + v1.z * v1.z);
 }
+
+double degrees_to_radians(double degrees) {
+#ifndef M_PI
+    const double pi = 3.1415926535897932385;
+    return degrees * pi / 180.0;
+#else
+    return degrees * M_PI / 180.0;
+#endif
+
+}

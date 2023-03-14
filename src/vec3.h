@@ -31,6 +31,7 @@ Vec3 refract(Vec3 uv, Vec3 n, double etai_over_etat);
 bool refract_2(Vec3 v, Vec3 n, float ni_over_nt, Vec3* refracted);
 Vec3* vec3_negate_ptr(Vec3* v);
 Vec3 vec3_negate(Vec3 v);
+double degrees_to_radians(double degrees);
 
 
 #endif  /* VEC3_H */

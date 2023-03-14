@@ -93,7 +93,7 @@ void draw_some_pixels(int* data)
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
-    int num_spheres = 4;
+    int num_spheres = 5;
 
     Vec3 sphere_ground_material_albedo = vec3(0.8, 0.8, 0.0);
     Vec3 sphere_left_material_albedo = vec3(0.8, 0.8, 0.8);
@@ -121,6 +121,14 @@ void draw_some_pixels(int* data)
         .mat_ptr = &sphere_left_material
     };
 
+    Sphere sphere_left_2 = {
+            .center.x = -1.0,
+            .center.y = 0.0,
+            .center.z = -1.0,
+            .radius = -0.4,
+            .mat_ptr = &sphere_left_material
+    };
+
     Sphere sphere_right = {
         .center.x = 1.0,
         .center.y = 0.0,
@@ -145,12 +153,17 @@ void draw_some_pixels(int* data)
     s_list[0] = sphere_ground;
     s_list[1] = sphere_center;
     s_list[2] = sphere_left;
-    s_list[3] = sphere_right;
+    s_list[3] = sphere_left_2;
+    s_list[4] = sphere_right;
 
     world.list = s_list;
     world.list_size = num_spheres;
 
-    Camera cam = create_camera();
+    double aspect_ratio = 16.0 / 9.0;
+    const int image_width = 400;
+    const int image_height = (int)(image_width / aspect_ratio);
+
+    Camera cam = create_camera(90, aspect_ratio);
     debugCamera(cam);
 
     Vec3 p = vec3(0, 0, 0);
