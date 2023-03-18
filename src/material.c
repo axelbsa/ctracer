@@ -60,15 +60,14 @@ int dielectric_scatter(
     *attenuation = vec3(1.0, 1.0, 1.0);
     double refraction_ratio = rec.front_face ? (1.0 / rec.mat_ptr->ir) : rec.mat_ptr->ir;
 
-    //vec3 unit_direction = unit_vector(r_in.direction());
     Vec3 unit_direction = unit_vector(direction(r_in));
 
     //double cos_theta = fmin(dot(-unit_direction, rec.normal), 1.0);
-    /*double cos_theta = MIN(dot(*vec3_negate(&unit_direction), rec.normal), 1.0);
-    //double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
+    double cos_theta = MIN(dot(vec3_negate(unit_direction), rec.normal), 1.0);
+    double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
 
     bool cannot_refract = refraction_ratio * sin_theta > 1.0;
-    Vec3 direction = vec3(0.0f, 0.0f, 0.0f);
+    Vec3 direction;
 
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_double())
     {
@@ -78,18 +77,14 @@ int dielectric_scatter(
     {
         direction = refract(unit_direction, rec.normal, refraction_ratio);
     }
-    */
 
-    Vec3 direction = vec3(0.0f, 0.0f, 0.0f);
-    //direction = refract(unit_direction, rec.normal, refraction_ratio);
-    direction = reflect(unit_direction, rec.normal);
     Ray _scattered_ray = {.A = rec.p, .B = direction};
     *scattered = _scattered_ray;
     return true;
 }
 
 
-int dielectric_scatter_2(
+int dielectric_scatter_old(
         Ray r_in, HitRecord rec, Vec3 *attenuation,
         Ray *scattered, Vec3 albedo)
 {
@@ -97,7 +92,7 @@ int dielectric_scatter_2(
     float reflect_prob;
     float ni_over_nt;
 
-    Vec3 outward_normal = vec3(0.0f, 0.0f, 0.0f);
+    Vec3 outward_normal;
     Vec3 reflected = reflect(direction(r_in), rec.normal);
     *attenuation = vec3(1.0f, 1.0f, 1.0f);
     Vec3 refracted = vec3(0.0f, 0.0f, 0.0f);
@@ -117,7 +112,7 @@ int dielectric_scatter_2(
 
     if (refract_2(direction(r_in), outward_normal, ni_over_nt, &refracted))
     {
-        reflect_prob = reflectance(cosine, rec.mat_ptr->ir);
+        reflect_prob = (float)reflectance(cosine, rec.mat_ptr->ir);
     }
     else
     {

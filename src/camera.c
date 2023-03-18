@@ -44,7 +44,7 @@ Camera create_camera(
     double viewport_height = 2.0 * h;
     double viewport_width = aspect_ratio * viewport_height;
 
-    double focal_length = 1.0;
+    //double focal_length = 1.0;   // Is this not used anymore, where did it go?
 
     c.w = unit_vector(vec3_sub(look_from, look_at));
     c.u = unit_vector( cross(vup, c.w) );
@@ -62,15 +62,8 @@ Camera create_camera(
     );
 
     c.origin            = look_from;
-//    c.horizontal        = vec3_const_mul(c.u, viewport_width);
-//    c.vertical          = vec3_const_mul(c.v, viewport_height);
     c.horizontal        = horizontal_mul;
     c.vertical          = vertical_mul;
-
-    //horizontal = focus_dist * viewport_width * u;
-    //vertical = focus_dist * viewport_height * v;
-    //lower_left_corner = origin - horizontal/2 - vertical/2 - focus_dist*w;
-    //lower_left_corner = origin - horizontal/2 - vertical/2 - w;
 
     Vec3 half_horizontal = vec3_const_div(c.horizontal, 2);
     Vec3 half_vertical   = vec3_const_div(c.vertical, 2);
@@ -125,7 +118,6 @@ Ray get_ray(Camera c, float s, float t)
     Vec3 offset = vec3_add(offset_x, offset_y);
 
     //ray(origin + offset, lower_left_corner + s*horizontal + t*vertical - origin - offset);
-
     Vec3 v_horizontal = vec3_const_mul(c.horizontal, s);
     Vec3 v_vertical = vec3_const_mul(c.vertical, t);
     Vec3 lower_plus_hori = vec3_add(c.lower_left_corner, v_horizontal);

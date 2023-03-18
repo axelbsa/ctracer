@@ -8,12 +8,60 @@
 #include "sphere.h"
 
 
-void _set_face_normal(Ray r, Vec3* outward_normal, HitRecord *rec) {
+static inline void _set_face_normal(Ray r, Vec3 outward_normal, HitRecord *rec)
+{
     //front_face = dot(r.direction(), outward_normal) < 0;
-    rec->front_face = dot(direction(r), *outward_normal) < 0;
+    rec->front_face = dot(direction(r), outward_normal) < 0;
 
     //normal = front_face ? outward_normal : -outward_normal;
-    rec->normal = rec->front_face ? *outward_normal : vec3_negate(*outward_normal);
+    rec->normal = rec->front_face ? outward_normal : vec3_negate(outward_normal);
+}
+
+bool sphere_hit_simple(Sphere sp, Ray r, double t_min, double t_max, HitRecord *rec)
+{
+    Vec3 oc = vec3_sub(origin(r), sp.center);
+    float a = square_length(direction(r));
+    float half_b = dot(oc, direction(r));
+    float c = square_length(oc) - sp.radius * sp.radius;
+
+    float discriminant = half_b * half_b - a * c;
+
+    if (discriminant < 0)
+    {
+        return false;
+    }
+
+    float sqrtd = sqrtf(discriminant);
+    double root = (-half_b - sqrtd) / a;
+
+    if (root < t_min || t_max < root)
+    {
+        root = (-half_b + sqrtd) / a;  // Second solution for the quadratic
+        if (root < t_min || t_max < root) // if ~ Still no solution to the equation
+        {
+            return false;
+        }
+    }
+
+    rec->t = (float)root;
+    rec->p = point_at_parameter(r, rec->t);
+    rec->mat_ptr = sp.mat_ptr;
+
+    // (rec.p - center) / radius;
+    Vec3 _p_minus_center = vec3_sub(rec->p, sp.center);
+    rec->normal = vec3_const_div(_p_minus_center, sp.radius);
+
+    /* Calculating the front facing normal doesn't work, there is a bug somewhere.
+     * luckily we can calculate the face normal in the material scatter functions,
+     * though, we need to do that for each scatter function :/
+
+    Vec3 _outward_normal = vec3_sub(rec->p, sp.center);
+    _outward_normal = vec3_const_div(_outward_normal, sp.radius);
+    rec->front_face = dot(direction(r), _outward_normal) < 0;
+    rec->normal = rec->front_face ? _outward_normal : vec3_negate(_outward_normal);
+    */
+
+    return true;
 }
 
 bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
@@ -32,7 +80,7 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
     {
         /* End of quadratic formula, probably faster to avoid squaring
          * until we actually have a "hit" */
-        float root = (-b - sqrt( discriminant )) / a;
+        float root = (-b - sqrtf( discriminant )) / a;
 
         if ( root < tmax && root > tmin) 
         {
@@ -55,7 +103,7 @@ bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec)
         }
         
         /* Check second solution in quadratic formula -b +- sqrt */
-        root = (-b + sqrt( discriminant )) / a;
+        root = (-b + sqrtf( discriminant )) / a;
         if ( root < tmax && root > tmin)
         {
             rec->t = root;

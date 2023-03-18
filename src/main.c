@@ -98,7 +98,7 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
                     materials[sphere_index].ir = 1.5;
 
                     //sphere_material->s = dielectric_scatter_2;
-                    materials[sphere_index].s = dielectric_scatter_2;
+                    materials[sphere_index].s = dielectric_scatter_old;
 
                     //world.add(make_shared<sphere>(center, 0.2, sphere_material));
                     Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
@@ -111,7 +111,7 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
     //auto material1 = make_shared<dielectric>(1.5);
     //world.add(make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
     //Material material11 = {.s = dielectric_scatter_2, .ir = 1.5};
-    materials[sphere_index].s = dielectric_scatter_2;
+    materials[sphere_index].s = dielectric_scatter_old;
     materials[sphere_index].ir = 1.5f;
 
     Sphere sp11 = {.center = vec3(0, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
@@ -221,6 +221,7 @@ void draw_some_pixels(
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
     /*
+
     int num_spheres = 5;
 
     Vec3 sphere_ground_material_albedo = vec3(0.8, 0.8, 0.0);
@@ -229,7 +230,7 @@ void draw_some_pixels(
     Vec3 sphere_right_material_albedo = vec3(0.8, 0.6, 0.2);
 
     Material sphere_ground_material = {.s = lambertian_scatter, .albedo = sphere_ground_material_albedo};
-    Material sphere_left_material = {.s = dielectric_scatter_2, .albedo = sphere_left_material_albedo, .ir = 1.5f};
+    Material sphere_left_material = {.s = dielectric_scatter_old, .albedo = sphere_left_material_albedo, .ir = 1.5f};
     Material sphere_center_material = {.s = lambertian_scatter, .albedo = sphere_center_material_albedo};
     Material sphere_right_material = {.s = metal_scatter, .albedo = sphere_right_material_albedo, .fuzz = CLAMP(1.0, 0.0, 1.0)};
 
@@ -301,6 +302,7 @@ void draw_some_pixels(
 
     fprintf(stderr, "After creating random_scene\n");
 
+
     Vec3 look_from = vec3(13,2,3);
     Vec3 look_at = vec3(0,0,0);
     float dist_to_focus = length(vec3_sub(look_from, look_at));
@@ -358,7 +360,7 @@ int main()
     srand48(time(NULL));
     setvbuf(stdout, 0, _IOLBF, 4096);
 
-    double aspect_ratio = 3.0f / 2.0f;
+    double aspect_ratio = 16.0f / 10.0f;
     //double aspect_ratio = 2.0 / 1.0;
     const int image_width = 400;
     const int image_height = (int)(image_width / aspect_ratio);

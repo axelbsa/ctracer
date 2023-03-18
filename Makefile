@@ -10,7 +10,7 @@
 CC=clang
 
 ifeq ($(OS),Windows_NT)
-    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -O3 -ffast-math
+    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -Ofast
     RMCMD=del
 else
     CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb -Wall
@@ -19,7 +19,7 @@ else
 endif
 
 
-SOURCES=src/main.c src/vec3.c src/ray.c src/material.c src/sphere.c src/hitable_list.c src/camera.c src/common.c
+SOURCES=src/main.c src/ray.c src/material.c src/sphere.c src/hitable_list.c src/camera.c src/common.c
 
 all:
 	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o main

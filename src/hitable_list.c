@@ -21,7 +21,7 @@ bool hittable_list_hit(HittableList hl, Ray r, float tmin, float tmax, HitRecord
     {
         Sphere sphere = hl.list[i];
         //fprintf(stderr, "HL.list index = %d\n", i);
-        bool hit = sphere_hit(sphere, r, tmin, closest_so_far, &temp_rec);
+        bool hit = sphere_hit_simple(sphere, r, tmin, closest_so_far, &temp_rec);
         //fprintf(stderr, "Done sphere hit\n");
 
         if ( hit )

@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include "vec3.h"
+#include <stdio.h>
 
 #define MIN(A,B)    ({ __typeof__(A) __a = (A); __typeof__(B) __b = (B); __a < __b ? __a : __b; })
 #define MAX(A,B)    ({ __typeof__(A) __a = (A); __typeof__(B) __b = (B); __a < __b ? __b : __a; })
@@ -13,16 +13,27 @@
   __x > __high ? __high : (__x < __low ? __low : __x);\
   })
 
+static inline void print_progress(int j, int image_height);
 
-extern void srand48(long seed);
-extern double drand48();
+void print_progress(int j, int image_height)
+{
 
-extern double random_double();
-extern double random_double_mm(double min, double max);
-extern Vec3 random_in_unit_sphere();
-extern Vec3 random_unit_vector();
-double get_time();
-void print_progress(int j, int image_height);
+    int current = (image_height - j) * 100 / image_height;
+    fprintf(stderr, "\r");
+    fprintf(stderr, "[");
+
+    for (int i = 0; i < current; i++)
+    {
+        fprintf(stderr, "#");
+    }
+
+    for (int i = current; i < 100; i++)
+    {
+        fprintf(stderr, " ");
+    }
+
+    fprintf(stderr, "] %%%d", current);
+}
 
 
 #endif
