@@ -362,9 +362,9 @@ int main()
 
     double aspect_ratio = 16.0f / 10.0f;
     //double aspect_ratio = 2.0 / 1.0;
-    const int image_width = 400;
+    const int image_width = 1200;
     const int image_height = (int)(image_width / aspect_ratio);
-    const int samples_per_pixel = 10;
+    const int samples_per_pixel = 500;
 
     int* data;
     data = (int*)malloc(sizeof(uint32_t) * image_width * image_height);

@@ -2,6 +2,7 @@
 #define VEC3_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 #include <math.h>
 
 #ifdef _WIN32
@@ -71,10 +72,12 @@ static inline Vec3 random_unit_vector();
 static inline double get_time();
 
 
+#ifdef _WIN32
 static inline void _dorand48(unsigned short xseed[3]);
 static inline double erand48(unsigned short xseed[3]);
 static inline double drand48();
 static inline void srand48(long seed);
+#endif
 
 
 
@@ -92,6 +95,7 @@ double get_time()
 
 }
 
+#ifdef _WIN32
 static unsigned short _rand48_seed[3] = {
         RAND48_SEED_0,
         RAND48_SEED_1,
@@ -144,6 +148,7 @@ void srand48(long seed){
     _rand48_mult[2] = RAND48_MULT_2;
     _rand48_add = RAND48_ADD;
 }
+#endif
 
 double random_double()
 {
