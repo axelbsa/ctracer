@@ -22,6 +22,129 @@
 #define ns 50
 
 
+void debug_s_list(HittableList* world)
+{
+    for (int i = 0; i < world->list_size; i++)
+    {
+        Sphere sp = world->list[i];
+        printf("Material Albedo %f\n", sp.mat_ptr->albedo.y);
+    }
+}
+
+
+HittableList random_scene(Sphere *s_list, Material *materials) {
+    fprintf(stderr, "ENtering random_scene\n");
+    HittableList world;
+
+    int num_spheres = 300;
+    int sphere_index = 0;
+
+
+    //auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+
+    /*Material sphere_ground_material = materials[sphere_index];
+    sphere_ground_material.s = lambertian_scatter;
+    sphere_ground_material.albedo = vec3(0.5f, 0.5f, 0.5f);*/
+    Material sphere_ground_material = {.s = lambertian_scatter, .albedo = vec3(0.5f, 0.5f, 0.5f)};
+    materials[sphere_index] = sphere_ground_material;
+
+    Sphere sphere_ground = {.center.x = 0.0, .center.y = -1000, .center.z = 0,
+                            .radius = 1000.0, .mat_ptr = &materials[sphere_index]};
+    s_list[sphere_index++] = sphere_ground;
+    //world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
+
+    for (int a = -11; a < 11; a++) {
+        for (int b = -11; b < 11; b++) {
+            double choose_mat = random_double();
+            Vec3 center = vec3(a + 0.9*random_double(), 0.2, b + 0.9*random_double());
+
+            if (length(vec3_sub(center, vec3(4, 0.2, 0))) > 0.9)
+            {
+                //shared_ptr<material> sphere_material;
+
+                if (choose_mat < 0.8) {
+                    // diffuse
+                    Vec3 albedo = vec3_mul(vec3_random(), vec3_random());
+
+                    //sphere_material->albedo = albedo;
+                    materials[sphere_index].albedo = albedo;
+
+                    //sphere_material->s = lambertian_scatter;
+                    materials[sphere_index].s = lambertian_scatter;
+
+                    Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
+                    s_list[sphere_index++] = sp;
+                } else if (choose_mat < 0.95) {
+                    // metal
+                    Vec3 albedo = vec3_random_mm(0.5, 1);
+                    double fuzz = random_double_mm(0, 0.5);
+
+                    //sphere_material->albedo = albedo;
+                    materials[sphere_index].albedo = albedo;
+
+                    //sphere_material->fuzz = fuzz;
+                    materials[sphere_index].fuzz = fuzz;
+
+                    //sphere_material->s = metal_scatter;
+                    materials[sphere_index].s = metal_scatter;
+
+                    //world.add(make_shared<sphere>(center, 0.2, sphere_material));
+                    Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
+                    s_list[sphere_index++] = sp;
+                } else {
+                    // glass
+
+                    //sphere_material->ir = 1.5;
+                    materials[sphere_index].ir = 1.5;
+
+                    //sphere_material->s = dielectric_scatter_2;
+                    materials[sphere_index].s = dielectric_scatter_2;
+
+                    //world.add(make_shared<sphere>(center, 0.2, sphere_material));
+                    Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
+                    s_list[sphere_index++] = sp;
+                }
+            }
+        }
+    }
+
+    //auto material1 = make_shared<dielectric>(1.5);
+    //world.add(make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
+    //Material material11 = {.s = dielectric_scatter_2, .ir = 1.5};
+    materials[sphere_index].s = dielectric_scatter_2;
+    materials[sphere_index].ir = 1.5f;
+
+    Sphere sp11 = {.center = vec3(0, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
+    s_list[sphere_index++] = sp11;
+
+    //auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
+    //world.add(make_shared<sphere>(point3(-4, 1, 0), 1.0, material2));
+    //Material material12 = {.s = lambertian_scatter, .albedo = vec3(0.4f, 0.2f, 0.1f)};
+    materials[sphere_index].s = lambertian_scatter;
+    materials[sphere_index].albedo = vec3(0.4f, 0.2f, 0.1f);
+
+    Sphere sp12 = {.center = vec3(-4, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
+    s_list[sphere_index++] = sp12;
+
+    //auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
+    //world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
+    //Material material13 = {.s = metal_scatter, .albedo = vec3(0.7f, 0.6f, 0.5f), .fuzz = 0.0};
+    materials[sphere_index].s = metal_scatter;
+    materials[sphere_index].albedo = vec3(0.7f, 0.6f, 0.5f);
+    materials[sphere_index].fuzz = 0.0f;
+
+    Sphere sp13 = {.center = vec3(4, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
+    s_list[sphere_index++] = sp13;
+
+    world.list = s_list;
+    world.list_size = sphere_index + 1;
+
+    fprintf(stderr, "Finished creating random_scene(), we made %d spheres\n", sphere_index + 1);
+
+    return world;
+}
+
+
 void debugCamera(Camera cam)
 {
     fprintf(
@@ -41,6 +164,7 @@ void debugVector(Vec3 v1)
 
 Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
 {
+    //fprintf(stderr, "Entering draw_some_pixels() func\n");
 
     // Dont know, but to be sure, lets reinitialize rec
     rec.normal = vec3(0.0f, 0.0f, 0.0f);
@@ -55,7 +179,7 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
     {
         Ray scattered;
         Vec3 attenuation;
-
+        //fprintf(stderr, "Found hit, checking material pointer scatter function\n");
         if (rec.mat_ptr->s(r, rec, &attenuation, &scattered, rec.mat_ptr->albedo) )
         {
             //return attenuation * ray_color(scattered, world, depth-1);
@@ -75,8 +199,8 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
     else
     {
         Vec3 unit_direction = unit_vector(direction(r));
-        float t = (unit_direction.y + 1.0) * 0.5;
-        float distance = (1.0 - t);
+        float t = (unit_direction.y + 1.0f) * 0.5f;
+        float distance = (1.0f - t);
 
         Vec3 identity = {1.0, 1.0, 1.0};
         Vec3 gradiant = {0.5, 0.7, 1.0};
@@ -96,6 +220,7 @@ void draw_some_pixels(
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
+    /*
     int num_spheres = 5;
 
     Vec3 sphere_ground_material_albedo = vec3(0.8, 0.8, 0.0);
@@ -160,19 +285,37 @@ void draw_some_pixels(
 
     world.list = s_list;
     world.list_size = num_spheres;
+    */
 
-    Vec3 look_from = vec3(3,3,2);
-    Vec3 look_at = vec3(0,0,-1);
+    fprintf(stderr, "Creating s_list\n");
+
+    Sphere* s_list = 0;
+    Material* materials = 0;
+
+    s_list = (Sphere*)malloc(sizeof(Sphere) * 500);
+    materials = (Material*)malloc(sizeof(Material) * 500);
+
+    HittableList world = random_scene(s_list, materials);
+
+    //debug_s_list(&world);
+
+    fprintf(stderr, "After creating random_scene\n");
+
+    Vec3 look_from = vec3(13,2,3);
+    Vec3 look_at = vec3(0,0,0);
+    float dist_to_focus = length(vec3_sub(look_from, look_at));
 
     Camera cam = create_camera(
             look_from,
             look_at,
             vec3(0,1,0),
-            50,
+            20,
             aspect_ratio,
-            length(vec3_sub(look_from, look_at)),
-            2.0
+            0.1,
+            10.0
     );
+
+    //Camera cam = create_camera_old(90,aspect_ratio);
 
     //camera cam(point3(-2,2,1), point3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
     debugCamera(cam);
@@ -201,14 +344,12 @@ void draw_some_pixels(
             int ib = (int) (255.99f * col.z);
 
             int index = (j * image_width) + i;
-            //fprintf(stderr, "[(i)=%d, (j)=%d   Index = %03d]   ", j, i, index);
             data[index] = (0xff << 24) | (ib << 16) | (ig << 8) | ir;
         }
-        //fprintf(stderr, "\n");
+        print_progress(j, image_height);
     }
-
     free(s_list);
-    fprintf(stderr, "Leaving draw_some_pixels()\n");
+    fprintf(stderr, "\nLeaving draw_some_pixels()\n");
 }
 
 
@@ -217,11 +358,11 @@ int main()
     srand48(time(NULL));
     setvbuf(stdout, 0, _IOLBF, 4096);
 
-    double aspect_ratio = 16.0 / 9.0;
+    double aspect_ratio = 3.0f / 2.0f;
     //double aspect_ratio = 2.0 / 1.0;
-    const int image_width = 1000;
+    const int image_width = 400;
     const int image_height = (int)(image_width / aspect_ratio);
-    const int samples_per_pixel = 50;
+    const int samples_per_pixel = 10;
 
     int* data;
     data = (int*)malloc(sizeof(uint32_t) * image_width * image_height);
@@ -232,14 +373,11 @@ int main()
         return EXIT_FAILURE;
     }
 
-    //stbi_flip_vertically_on_write(-1); // flag is non-zero to flip data vertically
-    long current_time = get_tick();
-
+    double current_time = get_time();
     draw_some_pixels(image_width, image_height, samples_per_pixel, aspect_ratio, data);
-
-    long delta = get_tick() - current_time;
-
-    fprintf(stderr, "[*] %ld seconds to trace all the rays\n", delta/1000);
+    double delta = get_time() - current_time;
+    fprintf(stderr, "[*] %g seconds to trace all the rays\n", delta);
+    //fprintf(stderr, "[*] Done trace all the rays\n");
 
     draw_image(data, image_width * image_height, image_width, image_height);
 

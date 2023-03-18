@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -26,19 +27,17 @@
 #define RAND48_ADD (0x000b)
 
 
-long get_tick()
+
+double get_time()
 {
 #ifdef _WIN32
-    // https://stackoverflow.com/questions/1695288/getting-the-current-time-in-milliseconds-from-the-system-clock-in-windows
-    SYSTEMTIME time;
-    GetSystemTime(&time);
-    WORD millis = (time.wSecond * 1000) + time.wMilliseconds;
-    return (long)millis;
+    return GetTickCount() / 1000.0;
 #else
-    struct timeval time;
-    gettimeofday(&time, NULL);
-    long millis = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-    return millis;
+    struct timeval tv;
+
+	gettimeofday(&tv, 0);
+
+	return tv.tv_sec + tv.tv_usec * 1.0e-6;
 #endif
 
 }
@@ -102,6 +101,12 @@ double random_double()
     return drand48();
 }
 
+double random_double_mm(double min, double max)
+{
+    // Returns a random real in [min,max).
+    return min + (max-min)*random_double();
+}
+
 Vec3 random_in_unit_sphere()
 {
     Vec3 p;
@@ -123,3 +128,23 @@ Vec3 random_unit_vector() {
     return unit_vector(random_in_unit_sphere());
 }
 
+
+void print_progress(int j, int image_height)
+{
+
+    int current = (image_height - j) * 100 / image_height;
+    fprintf(stderr, "\r");
+    fprintf(stderr, "[");
+
+    for (int i = 0; i < current; i++)
+    {
+        fprintf(stderr, "#");
+    }
+
+    for (int i = current; i < 100; i++)
+    {
+        fprintf(stderr, " ");
+    }
+
+    fprintf(stderr, "] %%%d", current);
+}

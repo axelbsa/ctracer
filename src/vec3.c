@@ -105,6 +105,16 @@ Vec3 vec3_negate(Vec3 v)
     return vec3(-v.x, -v.y, -v.z);
 }
 
+Vec3 vec3_random()
+{
+    return vec3(random_double(), random_double(), random_double());
+}
+
+Vec3 vec3_random_mm(double min, double max)
+{
+    return vec3(random_double_mm(min, max), random_double_mm(min, max), random_double_mm(min, max));
+}
+
 Vec3 random_in_unit_disc()
 {
     while (true)
@@ -198,6 +208,10 @@ vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
 return r_out_perp + r_out_parallel;
 }*/
 
+/* This is the version from the old book.
+ * It calculates the normals on each pass, making it slightly slower,
+ * but pre-calculating them ended up bogus in the sphere::hit()
+ * */
 bool refract_2(Vec3 v, Vec3 n, float ni_over_nt, Vec3* refracted)
 {
     Vec3 uv = unit_vector(v);

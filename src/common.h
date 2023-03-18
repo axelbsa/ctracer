@@ -18,9 +18,11 @@ extern void srand48(long seed);
 extern double drand48();
 
 extern double random_double();
+extern double random_double_mm(double min, double max);
 extern Vec3 random_in_unit_sphere();
 extern Vec3 random_unit_vector();
-long get_tick();
+double get_time();
+void print_progress(int j, int image_height);
 
 
 #endif

@@ -10,7 +10,7 @@
 CC=clang
 
 ifeq ($(OS),Windows_NT)
-    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb
+    CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -O3 -ffast-math
     RMCMD=del
 else
     CFLAGS=-Wall -std=gnu18 -Wno-missing-braces -ggdb -Wall
@@ -25,7 +25,7 @@ all:
 	$(CC) $(CFLAGS) $(SOURCES) $(LDFLAGS) -o main
 
 release:
-	$(CC) -DDEBUG $(SOURCES) $(CFLAGS) -O2 $(LFLAGS) -o main
+	$(CC) -DDEBUG $(SOURCES) $(CFLAGS) -O3 $(LFLAGS) -o main
 
 clean:
 	$(RMCMD) main

@@ -28,6 +28,7 @@ Camera create_camera(
         double focus_dist
 );
 
+Camera create_camera_old(double vfov, double aspect_ratio);
 void set_camera_position(Camera *c, Vec3 origin, Vec3 hori, Vec3 vert, Vec3 orig);
 Ray get_ray(Camera c, float s, float t);
 
