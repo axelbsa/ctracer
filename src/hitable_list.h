@@ -4,12 +4,6 @@
 #include "aabb.h"
 #include "sphere.h"
 
-typedef struct HitableListClass
-{
-    Sphere *list;
-    int list_size;
-
-}HittableList;
 
 // HittableListClass above can't have just sphere list
 // What about other primitives? Change it to an list of objects
@@ -18,13 +12,22 @@ typedef struct object
 {
     int object_type;
     union {
-        Sphere sp;
+        Sphere sphere;
         AABB bounding_box;
     };
 
 }Object;
 
+typedef struct HitableListClass
+{
+    Sphere *list;
+    Object *objects;
+    int list_size;
+
+}HittableList;
+
+
 bool hittable_list_hit(HittableList hl, Ray r, float tmin, float tmax, HitRecord *rec);
-bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB output_box);
+bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB *output_box);
 
 #endif  /* HITABLE_H */

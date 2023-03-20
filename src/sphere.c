@@ -8,6 +8,7 @@
 #include "sphere.h"
 
 
+/*
 static inline void _set_face_normal(Ray r, Vec3 outward_normal, HitRecord *rec)
 {
     //front_face = dot(r.direction(), outward_normal) < 0;
@@ -16,15 +17,18 @@ static inline void _set_face_normal(Ray r, Vec3 outward_normal, HitRecord *rec)
     //normal = front_face ? outward_normal : -outward_normal;
     rec->normal = rec->front_face ? outward_normal : vec3_negate(outward_normal);
 }
+*/
 
-bool bounding_box(Sphere sp, double time0, double time1, AABB output_box)
+bool bounding_box(Sphere sp, double time0, double time1, AABB *output_box)
 {
-
     AABB _out = {
             .minimum = vec3_sub(sp.center, vec3(sp.radius, sp.radius, sp.radius)),
             .maximum = vec3_add(sp.center, vec3(sp.radius, sp.radius, sp.radius))
     };
-    output_box = _out;
+
+    output_box->maximum = _out.maximum;
+    output_box->minimum = _out.minimum;
+
     return true;
 
 }
@@ -65,8 +69,9 @@ bool sphere_hit_simple(Sphere sp, Ray r, double t_min, double t_max, HitRecord *
 
     /* Calculating the front facing normal doesn't work, there is a bug somewhere.
      * luckily we can calculate the face normal in the material scatter functions,
-     * though, we need to do that for each scatter function :/
+     * though, we need to do that for each scatter function :/ */
 
+    /*
     Vec3 _outward_normal = vec3_sub(rec->p, sp.center);
     _outward_normal = vec3_const_div(_outward_normal, sp.radius);
     rec->front_face = dot(direction(r), _outward_normal) < 0;

@@ -175,7 +175,7 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
         return vec3(0.0f, 0.0f, 0.0f);
     }
 
-    if ( hittable_list_hit(world, r, 0.001, FLT_MAX, &rec))
+    if ( hittable_list_hit(world, r, 0.001f, FLT_MAX, &rec))
     {
         Ray scattered;
         Vec3 attenuation;
@@ -219,8 +219,6 @@ void draw_some_pixels(
 {
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
-
-    /*
 
     int num_spheres = 5;
 
@@ -275,19 +273,30 @@ void draw_some_pixels(
     };
 
     HittableList world;
-    Sphere *s_list;
-    s_list = (Sphere*)malloc(sizeof(Sphere) * num_spheres);
-    
-    s_list[0] = sphere_ground;
-    s_list[1] = sphere_center;
-    s_list[2] = sphere_left;
-    s_list[3] = sphere_left_2;
-    s_list[4] = sphere_right;
+    Object *s_list;
+    //s_list = (Sphere*)malloc(sizeof(Sphere) * num_spheres);
+    s_list = (Object*)malloc(sizeof(Object) * num_spheres);
 
-    world.list = s_list;
+    s_list[0].object_type = 1;
+    s_list[0].sphere = sphere_ground;
+
+    s_list[1].object_type = 1;
+    s_list[1].sphere = sphere_center;
+
+    s_list[2].object_type = 1;
+    s_list[2].sphere = sphere_left;
+
+    s_list[3].object_type = 1;
+    s_list[3].sphere = sphere_left_2;
+
+    s_list[4].object_type = 1;
+    s_list[4].sphere = sphere_right;
+
+    world.objects = s_list;
     world.list_size = num_spheres;
-    */
 
+
+    /*
     fprintf(stderr, "Creating s_list\n");
 
     Sphere* s_list = 0;
@@ -301,6 +310,7 @@ void draw_some_pixels(
     //debug_s_list(&world);
 
     fprintf(stderr, "After creating random_scene\n");
+    */
 
 
     Vec3 look_from = vec3(13,2,3);
@@ -364,9 +374,9 @@ int main()
 
     double aspect_ratio = 16.0f / 10.0f;
     //double aspect_ratio = 2.0 / 1.0;
-    const int image_width = 1200;
+    const int image_width = 400;
     const int image_height = (int)(image_width / aspect_ratio);
-    const int samples_per_pixel = 500;
+    const int samples_per_pixel = 50;
 
     int* data;
     data = (int*)malloc(sizeof(uint32_t) * image_width * image_height);

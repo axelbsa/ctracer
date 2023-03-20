@@ -52,7 +52,7 @@ int metal_scatter(
     return ( dot( direction(*scattered), rec.normal) > 0 );
 }
 
-
+/*
 int dielectric_scatter(
         Ray r_in, HitRecord rec, Vec3 *attenuation,
         Ray *scattered, Vec3 albedo)
@@ -82,6 +82,7 @@ int dielectric_scatter(
     *scattered = _scattered_ray;
     return true;
 }
+*/
 
 
 int dielectric_scatter_old(

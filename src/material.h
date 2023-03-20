@@ -9,7 +9,7 @@ typedef struct
     float t;
     Vec3 p;
     Vec3 normal;
-    bool front_face;
+    //bool front_face;
     struct material *mat_ptr;
 }HitRecord;
 

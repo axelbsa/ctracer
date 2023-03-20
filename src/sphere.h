@@ -16,7 +16,7 @@ typedef struct SphereObject
 
 bool sphere_hit(Sphere sp, Ray r, float tmin, float tmax, HitRecord *rec);
 bool sphere_hit_simple(Sphere sp, Ray r, double t_min, double t_max, HitRecord *rec);
-bool bounding_box(Sphere sp, double time0, double time1, AABB output_box);
+bool bounding_box(Sphere sp, double time0, double time1, AABB *output_box);
 
 
 #endif  /* Sphere */
