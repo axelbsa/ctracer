@@ -14,6 +14,8 @@ typedef struct CameraClass
     Vec3 vertical;
     Vec3 u, v, w;
     double lens_radius;
+    double time0;
+    double time1;
 
 }Camera;
 
@@ -25,7 +27,9 @@ Camera create_camera(
         double vfov,
         double aspect_ratio,
         double aperture,
-        double focus_dist
+        double focus_dist,
+        double _time0,
+        double _time1
 );
 
 Camera create_camera_old(double vfov, double aspect_ratio);

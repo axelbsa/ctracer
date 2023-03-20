@@ -314,7 +314,9 @@ void draw_some_pixels(
             20,
             aspect_ratio,
             0.1,
-            10.0
+            10.0,
+            0.0,
+            1.0
     );
 
     //Camera cam = create_camera_old(90,aspect_ratio);

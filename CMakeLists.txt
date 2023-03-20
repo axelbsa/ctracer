@@ -17,4 +17,4 @@ project(ctracer)
 file(GLOB_RECURSE src_files ${CMAKE_CURRENT_LIST_DIR}/src/*.[ch])
 
 #add_executable(${PROJECT_NAME} src/main.c src/vec3.c src/ray.c src/material.c src/sphere.c src/hitable_list.c src/camera.c src/common.c)
-add_executable(${PROJECT_NAME}  ${src_files})
+add_executable(${PROJECT_NAME}  ${src_files} src/aabb.h src/aabb.c)

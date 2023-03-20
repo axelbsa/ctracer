@@ -5,6 +5,13 @@
 #include "sphere.h"
 #include "hitable_list.h"
 
+bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB output_box)
+{
+    AABB temp_box;
+    bool first_box = true;
+
+}
+
 
 bool hittable_list_hit(HittableList hl, Ray r, float tmin, float tmax, HitRecord *rec)
 {

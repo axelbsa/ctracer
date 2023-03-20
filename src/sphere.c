@@ -17,6 +17,18 @@ static inline void _set_face_normal(Ray r, Vec3 outward_normal, HitRecord *rec)
     rec->normal = rec->front_face ? outward_normal : vec3_negate(outward_normal);
 }
 
+bool bounding_box(Sphere sp, double time0, double time1, AABB output_box)
+{
+
+    AABB _out = {
+            .minimum = vec3_sub(sp.center, vec3(sp.radius, sp.radius, sp.radius)),
+            .maximum = vec3_add(sp.center, vec3(sp.radius, sp.radius, sp.radius))
+    };
+    output_box = _out;
+    return true;
+
+}
+
 bool sphere_hit_simple(Sphere sp, Ray r, double t_min, double t_max, HitRecord *rec)
 {
     Vec3 oc = vec3_sub(origin(r), sp.center);

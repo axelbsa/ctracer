@@ -35,7 +35,9 @@ Camera create_camera_old(double vfov, double aspect_ratio)
 
 Camera create_camera(
         Vec3 look_from, Vec3 look_at, Vec3 vup,
-        double vfov, double aspect_ratio, double aperture, double focus_dist)
+        double vfov, double aspect_ratio, double aperture,
+        double focus_dist, double time0, double time1)
+
 {
     Camera c;
 
@@ -43,6 +45,9 @@ Camera create_camera(
     double h = tan(theta/2);
     double viewport_height = 2.0 * h;
     double viewport_width = aspect_ratio * viewport_height;
+
+    c.time0 = time0;
+    c.time1 = time1;
 
     //double focal_length = 1.0;   // Is this not used anymore, where did it go?
 
@@ -127,7 +132,7 @@ Ray get_ray(Camera c, float s, float t)
     Vec3 result = vec3_add(lower_plus_hori, vert_minus_orig);
     Vec3 origin_offset = vec3_add(c.origin, offset);
 
-    Ray look_at = {.A = origin_offset, .B = result};
+    Ray look_at = {.A = origin_offset, .B = result, .time = random_double_mm(c.time0, c.time1)};
 
     return look_at;
 }
