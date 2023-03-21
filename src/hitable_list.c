@@ -25,7 +25,7 @@ bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB *o
                     return false;
                 }
 
-                output_box = first_box ? temp_box : surrounding_box(*output_box, temp_box);
+                *output_box = first_box ? temp_box : surrounding_box(*output_box, temp_box);
                 first_box = false;
 
                 break;

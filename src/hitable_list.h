@@ -8,20 +8,22 @@
 // HittableListClass above can't have just sphere list
 // What about other primitives? Change it to an list of objects
 // That will waste some space but ... can't have'em all
-typedef struct object
+struct Object
 {
     int object_type;
+    AABB bounding_box;
     union {
         Sphere sphere;
-        AABB bounding_box;
     };
+    struct bvh_node *b_node;
+};
 
-}Object;
+typedef struct Object Object;
 
 typedef struct HitableListClass
 {
     Sphere *list;
-    Object *objects;
+    struct Object *objects;
     int list_size;
 
 }HittableList;
