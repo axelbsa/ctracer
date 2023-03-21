@@ -28,7 +28,6 @@ typedef struct HitableListClass
 
 }HittableList;
 
-
 bool hittable_list_hit(HittableList hl, Ray r, float tmin, float tmax, HitRecord *rec);
 bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB *output_box);
 

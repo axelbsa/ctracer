@@ -18,14 +18,14 @@ static inline bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_m
 
 bool bvh_node_bounding_box(bvh_node b_node, double time0, double time1, AABB *output_box)
 {
-    *output_box = b_node.bounding_box;
+    *output_box = b_node.box;
     return true;
 }
 
 
 bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec)
 {
-    if ( !aabb_hit(b_node.bounding_box, r, t_min, t_max) )
+    if ( !aabb_hit(b_node.box, r, t_min, t_max) )
         return false;
 
     bool hit_left = false;
