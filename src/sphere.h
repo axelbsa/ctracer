@@ -6,6 +6,8 @@
 #include "vec3.h"
 #include "material.h"
 
+extern int sph;
+
 typedef struct SphereObject
 {
     Vec3 center;

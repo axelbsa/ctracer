@@ -21,6 +21,7 @@
 #define ny 500
 #define ns 50
 
+extern int sph;
 
 void debug_s_list(HittableList* world)
 {
@@ -32,7 +33,7 @@ void debug_s_list(HittableList* world)
 }
 
 
-HittableList random_scene(Sphere *s_list, Material *materials) {
+HittableList random_scene(Object *s_list, Material *materials) {
     fprintf(stderr, "ENtering random_scene\n");
     HittableList world;
 
@@ -50,7 +51,9 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
 
     Sphere sphere_ground = {.center.x = 0.0, .center.y = -1000, .center.z = 0,
                             .radius = 1000.0, .mat_ptr = &materials[sphere_index]};
-    s_list[sphere_index++] = sphere_ground;
+
+    s_list[sphere_index].object_type = 1;
+    s_list[sphere_index++].sphere = sphere_ground;
     //world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
 
     for (int a = -11; a < 11; a++) {
@@ -73,7 +76,8 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
                     materials[sphere_index].s = lambertian_scatter;
 
                     Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
-                    s_list[sphere_index++] = sp;
+                    s_list[sphere_index].object_type = 1;
+                    s_list[sphere_index++].sphere = sp;
                 } else if (choose_mat < 0.95) {
                     // metal
                     Vec3 albedo = vec3_random_mm(0.5, 1);
@@ -90,7 +94,8 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
 
                     //world.add(make_shared<sphere>(center, 0.2, sphere_material));
                     Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
-                    s_list[sphere_index++] = sp;
+                    s_list[sphere_index].object_type = 1;
+                    s_list[sphere_index++].sphere = sp;
                 } else {
                     // glass
 
@@ -102,7 +107,8 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
 
                     //world.add(make_shared<sphere>(center, 0.2, sphere_material));
                     Sphere sp = {.center = center, .radius = 0.2f, .mat_ptr = &materials[sphere_index]};
-                    s_list[sphere_index++] = sp;
+                    s_list[sphere_index].object_type = 1;
+                    s_list[sphere_index++].sphere = sp;
                 }
             }
         }
@@ -115,7 +121,8 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
     materials[sphere_index].ir = 1.5f;
 
     Sphere sp11 = {.center = vec3(0, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
-    s_list[sphere_index++] = sp11;
+    s_list[sphere_index].object_type = 1;
+    s_list[sphere_index++].sphere = sp11;
 
     //auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
     //world.add(make_shared<sphere>(point3(-4, 1, 0), 1.0, material2));
@@ -124,7 +131,8 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
     materials[sphere_index].albedo = vec3(0.4f, 0.2f, 0.1f);
 
     Sphere sp12 = {.center = vec3(-4, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
-    s_list[sphere_index++] = sp12;
+    s_list[sphere_index].object_type = 1;
+    s_list[sphere_index++].sphere = sp12;
 
     //auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     //world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
@@ -134,9 +142,10 @@ HittableList random_scene(Sphere *s_list, Material *materials) {
     materials[sphere_index].fuzz = 0.0f;
 
     Sphere sp13 = {.center = vec3(4, 1, 0), .radius = 1.0f, .mat_ptr = &materials[sphere_index]};
-    s_list[sphere_index++] = sp13;
+    s_list[sphere_index].object_type = 1;
+    s_list[sphere_index++].sphere = sp13;
 
-    world.list = s_list;
+    world.objects = s_list;
     world.list_size = sphere_index + 1;
 
     fprintf(stderr, "Finished creating random_scene(), we made %d spheres\n", sphere_index + 1);
@@ -220,6 +229,8 @@ void draw_some_pixels(
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
+    /*
+
     int num_spheres = 5;
 
     Vec3 sphere_ground_material_albedo = vec3(0.8, 0.8, 0.0);
@@ -275,7 +286,7 @@ void draw_some_pixels(
     HittableList world;
     Object *s_list;
     //s_list = (Sphere*)malloc(sizeof(Sphere) * num_spheres);
-    s_list = (Object*)malloc(sizeof(Object) * num_spheres);
+    s_list = malloc(sizeof(Object) * num_spheres);
 
     s_list[0].object_type = 1;
     s_list[0].sphere = sphere_ground;
@@ -295,14 +306,16 @@ void draw_some_pixels(
     world.objects = s_list;
     world.list_size = num_spheres;
 
+    */
 
-    /*
+
+
     fprintf(stderr, "Creating s_list\n");
 
-    Sphere* s_list = 0;
+    Object* s_list = 0;
     Material* materials = 0;
 
-    s_list = (Sphere*)malloc(sizeof(Sphere) * 500);
+    s_list = malloc(sizeof(Object) * 500);
     materials = (Material*)malloc(sizeof(Material) * 500);
 
     HittableList world = random_scene(s_list, materials);
@@ -310,7 +323,7 @@ void draw_some_pixels(
     //debug_s_list(&world);
 
     fprintf(stderr, "After creating random_scene\n");
-    */
+
 
 
     Vec3 look_from = vec3(13,2,3);
@@ -372,7 +385,7 @@ int main()
     srand48(time(NULL));
     setvbuf(stdout, 0, _IOLBF, 4096);
 
-    double aspect_ratio = 16.0f / 10.0f;
+    double aspect_ratio = 3.0f / 2.0f;
     //double aspect_ratio = 2.0 / 1.0;
     const int image_width = 400;
     const int image_height = (int)(image_width / aspect_ratio);
@@ -391,6 +404,7 @@ int main()
     draw_some_pixels(image_width, image_height, samples_per_pixel, aspect_ratio, data);
     double delta = get_time() - current_time;
     fprintf(stderr, "[*] %g seconds to trace all the rays\n", delta);
+    fprintf(stderr, "[*] Number of hits to sphere %d\n", sph);
     //fprintf(stderr, "[*] Done trace all the rays\n");
 
     draw_image(data, image_width * image_height, image_width, image_height);

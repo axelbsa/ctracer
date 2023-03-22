@@ -58,4 +58,6 @@ Object * bvh_create_node(bvh_node b_node, HittableList **l,const int n, float ti
         b_node.left = bvh_create_node(b_node, l, n / 2, time0, time1);
         b_node.right = bvh_create_node(b_node, l + n / 2, n - n / 2, time0, time1);
     }
+
+    //b_node.box = :
 }

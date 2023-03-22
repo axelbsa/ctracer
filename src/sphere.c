@@ -7,6 +7,8 @@
 #include "material.h"
 #include "sphere.h"
 
+int sph = 0;
+
 
 /*
 static inline void _set_face_normal(Ray r, Vec3 outward_normal, HitRecord *rec)
@@ -39,6 +41,8 @@ bool sphere_hit_simple(Sphere sp, Ray r, double t_min, double t_max, HitRecord *
     float a = square_length(direction(r));
     float half_b = dot(oc, direction(r));
     float c = square_length(oc) - sp.radius * sp.radius;
+
+    sph++;
 
     float discriminant = half_b * half_b - a * c;
 
