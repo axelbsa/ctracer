@@ -42,12 +42,12 @@ bool sphere_hit_simple(Sphere sp, Ray r, double t_min, double t_max, HitRecord *
     float half_b = dot(oc, direction(r));
     float c = square_length(oc) - sp.radius * sp.radius;
 
-    sph++;
 
     float discriminant = half_b * half_b - a * c;
 
     if (discriminant < 0)
     {
+        sph++;
         return false;
     }
 

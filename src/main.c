@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "common.h"
 #include "material.h"
+#include "bvh.h"
 
 #define nx 1000
 #define ny 500
@@ -176,9 +177,9 @@ Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
     //fprintf(stderr, "Entering draw_some_pixels() func\n");
 
     // Dont know, but to be sure, lets reinitialize rec
-    rec.normal = vec3(0.0f, 0.0f, 0.0f);
+    //rec.normal = vec3(0.0f, 0.0f, 0.0f);
     //rec.t = 0.0f;
-    rec.p = p;
+    //rec.p = p;
 
     if (depth <= 0) {
         return vec3(0.0f, 0.0f, 0.0f);
@@ -320,11 +321,13 @@ void draw_some_pixels(
 
     HittableList world = random_scene(s_list, materials);
 
+    AABB box;
+    //bvh_node foo = {.box = box};
+    //bvh_create_node(foo, &world, 486, 0, 0);
+
     //debug_s_list(&world);
 
     fprintf(stderr, "After creating random_scene\n");
-
-
 
     Vec3 look_from = vec3(13,2,3);
     Vec3 look_at = vec3(0,0,0);
@@ -364,7 +367,7 @@ void draw_some_pixels(
             }
 
             col = vec3_const_div(col, samples_per_pixel);
-            col = vec3( sqrt(col.x), sqrt(col.y), sqrt(col.z) );
+            col = vec3( sqrtf(col.x), sqrtf(col.y), sqrtf(col.z) );
 
             int ir = (int) (255.99f * col.x);
             int ig = (int) (255.99f * col.y);
@@ -387,9 +390,9 @@ int main()
 
     double aspect_ratio = 3.0f / 2.0f;
     //double aspect_ratio = 2.0 / 1.0;
-    const int image_width = 400;
+    const int image_width = 200;
     const int image_height = (int)(image_width / aspect_ratio);
-    const int samples_per_pixel = 50;
+    const int samples_per_pixel = 10;
 
     int* data;
     data = (int*)malloc(sizeof(uint32_t) * image_width * image_height);
@@ -404,7 +407,7 @@ int main()
     draw_some_pixels(image_width, image_height, samples_per_pixel, aspect_ratio, data);
     double delta = get_time() - current_time;
     fprintf(stderr, "[*] %g seconds to trace all the rays\n", delta);
-    fprintf(stderr, "[*] Number of hits to sphere %d\n", sph);
+    fprintf(stderr, "[*] Number of hits to sphere where disc < 0 %d\n", sph);
     //fprintf(stderr, "[*] Done trace all the rays\n");
 
     draw_image(data, image_width * image_height, image_width, image_height);
