@@ -230,7 +230,6 @@ void draw_some_pixels(
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
-    /*
 
     int num_spheres = 5;
 
@@ -307,10 +306,14 @@ void draw_some_pixels(
     world.objects = s_list;
     world.list_size = num_spheres;
 
-    */
+    AABB box;
+    bvh_node foo = {.box = box};
+    HittableList *world_ptr = &world;
+    bvh_create_node(foo, &world_ptr, num_spheres, 0, 0);
 
 
 
+    /*
     fprintf(stderr, "Creating s_list\n");
 
     Object* s_list = 0;
@@ -326,10 +329,12 @@ void draw_some_pixels(
     //bvh_create_node(foo, &world, 486, 0, 0);
 
     //debug_s_list(&world);
+    */
 
     fprintf(stderr, "After creating random_scene\n");
 
-    Vec3 look_from = vec3(13,2,3);
+    //Vec3 look_from = vec3(13,2,3);
+    Vec3 look_from = vec3(0,2,10);
     Vec3 look_at = vec3(0,0,0);
     float dist_to_focus = length(vec3_sub(look_from, look_at));
 
@@ -390,7 +395,7 @@ int main()
 
     double aspect_ratio = 3.0f / 2.0f;
     //double aspect_ratio = 2.0 / 1.0;
-    const int image_width = 200;
+    const int image_width = 400;
     const int image_height = (int)(image_width / aspect_ratio);
     const int samples_per_pixel = 10;
 

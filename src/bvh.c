@@ -24,7 +24,7 @@ int _box_z_compare(const void * a, const void * b)
     return 0;
 }
 
-Object * bvh_create_node(bvh_node b_node, HittableList *l,const int n, float time0, float time1)
+Object * bvh_create_node(bvh_node b_node, HittableList **l,const int n, float time0, float time1)
 {
     const int axis = (int)(3 * drand48());
 
@@ -45,13 +45,13 @@ Object * bvh_create_node(bvh_node b_node, HittableList *l,const int n, float tim
 
     if (n == 1)
     {
-        b_node.left = l[0].objects;
-        b_node.right = l[0].objects;
+        b_node.left = l[0]->objects;
+        b_node.right = l[0]->objects;
     }
     else if (n == 2)
     {
-        b_node.left = l[0].objects;
-        b_node.left = l[1].objects;
+        b_node.left = l[0]->objects;
+        b_node.left = l[1]->objects;
     }
     else
     {

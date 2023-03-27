@@ -66,8 +66,8 @@ bool hittable_list_hit(HittableList hl, Ray r, float tmin, float tmax, HitRecord
                 break;
             }
             case 2: {
-                AABB bounding_box = hl.objects[i].bounding_box;
-                hit = aabb_hit(bounding_box, r, tmin, closest_so_far);
+                //AABB bounding_box = hl.objects[i].bounding_box;
+                //hit = aabb_hit(bounding_box, r, tmin, closest_so_far);
                 break;
             }
             default:

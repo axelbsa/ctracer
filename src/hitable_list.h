@@ -6,16 +6,16 @@
 
 
 // HittableListClass above can't have just sphere list
-// What about other primitives? Change it to an list of objects
+// What about other primitives? Change it to a list of objects
 // That will waste some space but ... can't have'em all
 struct Object
 {
     int object_type;
-    AABB bounding_box;
+    //AABB bounding_box;  // The bounding boxes is in the primitive (i think?)
     union {
         Sphere sphere;
+        struct bvh_node *b_node;
     };
-    struct bvh_node *b_node;
 };
 
 typedef struct Object Object;
