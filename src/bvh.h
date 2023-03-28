@@ -6,20 +6,22 @@
 
 
 struct bvh_node{
-    struct Object *left;
-    struct Object *right;
+    int object_type;
+    struct Object value;
+    struct bvh_node *left;
+    struct bvh_node *right;
     AABB box;
 };
 
 typedef struct bvh_node bvh_node;
 
-static inline bool bvh_bounding_box(double time0, double time1, AABB *output_box);
+static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box);
 static inline bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec);
-Object * bvh_create_node(bvh_node b_node, HittableList **l, const int n, float time0, float time1);
+void bvh_create_node(bvh_node *b_node, HittableList **l, const int n, float time0, float time1);
 
-static inline bool bvh_node_bounding_box(bvh_node b_node, double time0, double time1, AABB *output_box)
+static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box)
 {
-    *output_box = b_node.box;
+    *output_box = obj->box;
     return true;
 }
 
@@ -35,10 +37,10 @@ bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_max, HitRecord 
     int left_object_type = b_node.left->object_type;
     switch(left_object_type){
         case 1:
-            hit_left = sphere_hit_simple(b_node.left->sphere, r, t_min, t_max, rec);
+            hit_left = sphere_hit_simple(b_node.left->value.sphere, r, t_min, t_max, rec);
             break;
         case 2:
-            hit_left = bvh_node_hit(*b_node.left->b_node, r, t_min, t_max, rec);
+            hit_left = bvh_node_hit(*b_node.left, r, t_min, t_max, rec);
             break;
         default:
             break;
@@ -48,10 +50,10 @@ bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_max, HitRecord 
     int right_object_type = b_node.right->object_type;
     switch(right_object_type){
         case 1:
-            hit_right = sphere_hit_simple(b_node.right->sphere, r, t_min, t_max, rec);
+            hit_right = sphere_hit_simple(b_node.right->value.sphere, r, t_min, t_max, rec);
             break;
         case 2:
-            hit_right = bvh_node_hit(*b_node.right->b_node, r, t_min, hit_left ? rec->t : t_max, rec);
+            hit_right = bvh_node_hit(*b_node.right, r, t_min, hit_left ? rec->t : t_max, rec);
             break;
         default:
             break;

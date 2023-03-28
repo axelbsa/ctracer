@@ -11,7 +11,7 @@
 struct Object
 {
     int object_type;
-    //AABB bounding_box;  // The bounding boxes is in the primitive (i think?)
+    AABB box;
     union {
         Sphere sphere;
         struct bvh_node *b_node;
@@ -23,7 +23,7 @@ typedef struct Object Object;
 typedef struct HitableListClass
 {
     Sphere *list;
-    struct Object *objects;
+    struct Object *objects;  // This should probably be changed to a bvh_node which has 2 object pointers
     int list_size;
 
 }HittableList;

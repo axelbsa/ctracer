@@ -307,9 +307,9 @@ void draw_some_pixels(
     world.list_size = num_spheres;
 
     AABB box;
-    bvh_node foo = {.box = box};
+    bvh_node root = {.box = box};
     HittableList *world_ptr = &world;
-    bvh_create_node(foo, &world_ptr, num_spheres, 0, 0);
+    bvh_create_node(&root, &world_ptr, num_spheres, 0, 0);
 
 
 

@@ -5,9 +5,10 @@
 #include "sphere.h"
 #include "hitable_list.h"
 
-bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB *output_box)
-{
 
+// This is a bounding box of a list
+bool hittable_bounding_box(HittableList hl, double time0, double time1, AABB *output_box)
+{
     AABB temp_box;
     bool first_box = true;
 
@@ -31,6 +32,7 @@ bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB *o
                 break;
             }
             case 2: {
+                // What to do with the other primitives? more specifically, other bvh_node or lists of those?
             }
             default:
                 break;
