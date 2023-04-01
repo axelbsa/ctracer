@@ -22,13 +22,21 @@ typedef struct Object Object;
 
 typedef struct HitableListClass
 {
-    Sphere *list;
-    struct Object *objects;  // This should probably be changed to a bvh_node which has 2 object pointers
+    //Sphere *list;
+    struct Object *objects;
     int list_size;
 
 }HittableList;
 
+typedef struct HitableListBvhClass
+{
+    Sphere *list;
+    struct bvh_node *objects;
+    int list_size;
+
+}HittableListBVH;
+
 bool hittable_list_hit(HittableList hl, Ray r, float tmin, float tmax, HitRecord *rec);
-bool hittable_bounding_box(HittableList  hl, double time0, double time1, AABB *output_box);
+bool hittable_bounding_box(HittableListBVH hl, double time0, double time1, AABB *output_box);
 
 #endif  /* HITABLE_H */

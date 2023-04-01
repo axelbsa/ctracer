@@ -13,11 +13,11 @@ struct bvh_node{
     AABB box;
 };
 
-typedef struct bvh_node bvh_node;
+typedef struct bvh_node Bvh_node;
 
 static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box);
-static inline bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec);
-void bvh_create_node(bvh_node *b_node, HittableList **l, const int n, float time0, float time1);
+static inline bool bvh_node_hit(struct bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec);
+Bvh_node* bvh_create_node(struct bvh_node *b_node, HittableList **l, const int n, float time0, float time1);
 
 static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box)
 {
@@ -26,7 +26,7 @@ static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1
 }
 
 
-bool bvh_node_hit(bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec)
+bool bvh_node_hit(struct bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec)
 {
     if ( !aabb_hit(b_node.box, r, t_min, t_max) )
         return false;

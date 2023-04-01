@@ -4,10 +4,11 @@
 #include "ray.h"
 #include "sphere.h"
 #include "hitable_list.h"
+#include "bvh.h"
 
 
 // This is a bounding box of a list
-bool hittable_bounding_box(HittableList hl, double time0, double time1, AABB *output_box)
+bool hittable_bounding_box(HittableListBVH hl, double time0, double time1, AABB *output_box)
 {
     AABB temp_box;
     bool first_box = true;
@@ -18,7 +19,7 @@ bool hittable_bounding_box(HittableList hl, double time0, double time1, AABB *ou
 
         switch(object_type) {
             case 1: {
-                Sphere sphere = hl.objects[i].sphere;
+                Sphere sphere = hl.objects[i].value.sphere;
                 bool hit = bounding_box(sphere, time0, time1, &temp_box);
 
                 if ( !hit )

@@ -22,13 +22,15 @@
 #define ny 500
 #define ns 50
 
+#define BVH 0
+
 extern int sph;
 
 void debug_s_list(HittableList* world)
 {
     for (int i = 0; i < world->list_size; i++)
     {
-        Sphere sp = world->list[i];
+        Sphere sp = world->objects->sphere;
         printf("Material Albedo %f\n", sp.mat_ptr->albedo.y);
     }
 }
@@ -172,6 +174,57 @@ void debugVector(Vec3 v1)
     fprintf(stderr, "Vector has: [%f, %f, %f]\n", v1.x, v1.y, v1.z );
 }
 
+
+Vec3 bvh_color(Ray r, HittableListBVH world, int depth, Vec3 p, HitRecord rec)
+{
+    //fprintf(stderr, "Entering draw_some_pixels() func\n");
+
+    // Dont know, but to be sure, lets reinitialize rec
+    //rec.normal = vec3(0.0f, 0.0f, 0.0f);
+    //rec.t = 0.0f;
+    //rec.p = p;
+
+    if (depth <= 0) {
+        return vec3(0.0f, 0.0f, 0.0f);
+    }
+
+    if ( bvh_node_hit(*world.objects, r, 0.001f, FLT_MAX, &rec))
+    {
+        Ray scattered;
+        Vec3 attenuation;
+        //fprintf(stderr, "Found hit, checking material pointer scatter function\n");
+        if (rec.mat_ptr->s(r, rec, &attenuation, &scattered, rec.mat_ptr->albedo) )
+        {
+            //return attenuation * ray_color(scattered, world, depth-1);
+            return vec3_mul(attenuation, bvh_color(scattered, world, depth-1, p, rec) );
+        }
+
+        return vec3(0.0f,0.0f,0.0f);
+
+        //fprintf(stderr, "Entering draw_some_pixels() func\n");
+        //Vec3 target = vec3_add(rec.p, rec.normal);
+        //Vec3 random_sphere = random_unit_vector();
+        //target = vec3_add(target, random_sphere);
+        //Ray temp = { rec.p, vec3_sub(target, rec.p) };
+
+        //return vec3_const_mul( color(temp, world, depth - 1, p, rec), 0.5 );
+    }
+    else
+    {
+        Vec3 unit_direction = unit_vector(direction(r));
+        float t = (unit_direction.y + 1.0f) * 0.5f;
+        float distance = (1.0f - t);
+
+        Vec3 identity = {1.0, 1.0, 1.0};
+        Vec3 gradiant = {0.5, 0.7, 1.0};
+
+        Vec3 v_distance = vec3_const_mul(identity, distance);
+        Vec3 v_gradiant = vec3_const_mul(gradiant, t);
+        return vec3_add(v_distance, v_gradiant);
+    }
+}
+
+
 Vec3 color(Ray r, HittableList world, int depth, Vec3 p, HitRecord rec)
 {
     //fprintf(stderr, "Entering draw_some_pixels() func\n");
@@ -230,6 +283,7 @@ void draw_some_pixels(
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
+#if !(BVH)
 
     int num_spheres = 5;
 
@@ -306,14 +360,12 @@ void draw_some_pixels(
     world.objects = s_list;
     world.list_size = num_spheres;
 
+#else
+
     AABB box;
-    bvh_node root = {.box = box};
+    struct bvh_node root = {.box = box};
     HittableList *world_ptr = &world;
-    bvh_create_node(&root, &world_ptr, num_spheres, 0, 0);
-
-
-
-    /*
+    //bvh_create_node(&root, &world_ptr, num_spheres, 0, 0);
     fprintf(stderr, "Creating s_list\n");
 
     Object* s_list = 0;
@@ -329,12 +381,12 @@ void draw_some_pixels(
     //bvh_create_node(foo, &world, 486, 0, 0);
 
     //debug_s_list(&world);
-    */
+#endif
 
     fprintf(stderr, "After creating random_scene\n");
 
-    //Vec3 look_from = vec3(13,2,3);
-    Vec3 look_from = vec3(0,2,10);
+    Vec3 look_from = vec3(13,2,3);  // Random scene camera
+    //Vec3 look_from = vec3(0,2,10);
     Vec3 look_at = vec3(0,0,0);
     float dist_to_focus = length(vec3_sub(look_from, look_at));
 
@@ -368,6 +420,9 @@ void draw_some_pixels(
                 float u = ((float) i + (float)random_double()) / (float) image_width;
                 float v = ((float) j + (float)random_double()) / (float) image_height;
                 Ray r = get_ray(cam, u, v);
+#if BVH
+                col = vec3_add(col, bvh_color(r, world, max_depth, p, rec));
+#endif
                 col = vec3_add(col, color(r, world, max_depth, p, rec));
             }
 
