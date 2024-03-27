@@ -22,7 +22,7 @@
 #define ny 500
 #define ns 50
 
-#define BVH 0
+#define BVH 1
 
 extern int sph;
 
@@ -283,7 +283,6 @@ void draw_some_pixels(
     const int max_depth = 50;
     fprintf(stderr, "Entering draw_some_pixels() func\n");
 
-#if !(BVH)
 
     int num_spheres = 5;
 
@@ -337,6 +336,8 @@ void draw_some_pixels(
         .mat_ptr = &sphere_ground_material
     };
 
+#if !(BVH)
+
     HittableList world;
     Object *s_list;
     //s_list = (Sphere*)malloc(sizeof(Sphere) * num_spheres);
@@ -362,12 +363,7 @@ void draw_some_pixels(
 
 #else
 
-    AABB box;
-    struct bvh_node root = {.box = box};
-    HittableList *world_ptr = &world;
-    //bvh_create_node(&root, &world_ptr, num_spheres, 0, 0);
-    fprintf(stderr, "Creating s_list\n");
-
+    /*  Random scene allocation
     Object* s_list = 0;
     Material* materials = 0;
 
@@ -375,8 +371,29 @@ void draw_some_pixels(
     materials = (Material*)malloc(sizeof(Material) * 500);
 
     HittableList world = random_scene(s_list, materials);
+    */
+    HittableList world;
+    HittableListBVH bvh_world;
+    Object *s_list;
+
+    s_list = malloc(sizeof(Object) * num_spheres);
+
+    world.objects = s_list;
+    world.list_size = num_spheres;
 
     AABB box;
+    struct bvh_node root = {.box = box};
+
+    bvh_world.objects = &root;
+
+    HittableListBVH *bvh_world_ptr = &bvh_world;
+    HittableList  *world_ptr = &world;
+
+    bvh_create_node(&root, &world_ptr, &bvh_world_ptr, num_spheres, 0, 0);
+
+    fprintf(stderr, "Creating s_list\n");
+
+    //AABB box;
     //bvh_node foo = {.box = box};
     //bvh_create_node(foo, &world, 486, 0, 0);
 
@@ -421,9 +438,11 @@ void draw_some_pixels(
                 float v = ((float) j + (float)random_double()) / (float) image_height;
                 Ray r = get_ray(cam, u, v);
 #if BVH
-                col = vec3_add(col, bvh_color(r, world, max_depth, p, rec));
-#endif
+                col = vec3_add(col, bvh_color(r, bvh_world, max_depth, p, rec));
+#else
                 col = vec3_add(col, color(r, world, max_depth, p, rec));
+#endif
+
             }
 
             col = vec3_const_div(col, samples_per_pixel);

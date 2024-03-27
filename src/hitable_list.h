@@ -30,7 +30,6 @@ typedef struct HitableListClass
 
 typedef struct HitableListBvhClass
 {
-    Sphere *list;
     struct bvh_node *objects;
     int list_size;
 

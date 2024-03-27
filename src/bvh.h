@@ -15,11 +15,11 @@ struct bvh_node{
 
 typedef struct bvh_node Bvh_node;
 
-static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box);
+//static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box);
 static inline bool bvh_node_hit(struct bvh_node b_node, Ray r, double t_min, double t_max, HitRecord *rec);
-Bvh_node* bvh_create_node(struct bvh_node *b_node, HittableList **l, const int n, float time0, float time1);
+Bvh_node* bvh_create_node(struct bvh_node *b_node, HittableList **l, HittableListBVH **bvh_l, const int n, float time0, float time1);
 
-static inline bool bvh_node_bounding_box(Object *obj, double time0, double time1, AABB *output_box)
+static inline bool bvh_node_bounding_box(struct bvh_node *obj, double time0, double time1, AABB *output_box)
 {
     *output_box = obj->box;
     return true;
